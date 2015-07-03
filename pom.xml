@@ -11,8 +11,8 @@
 
   <modules>
     <module>cloud-code-base</module>
-		<module>cloud-code-sdk</module>
-		<module>cloud-code-test</module>
+    <module>cloud-code-sdk</module>
+    <module>cloud-code-test</module>
   </modules>
 
   <properties>
@@ -94,8 +94,13 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>com.ilegendsoft</groupId>
+        <groupId>as.leap</groupId>
         <artifactId>cloud-code-base</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>as.leap</groupId>
+        <artifactId>cloud-code-sdk</artifactId>
         <version>${project.version}</version>
       </dependency>
 
