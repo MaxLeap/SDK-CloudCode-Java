@@ -1,0 +1,20 @@
+*.class
+*.iml
+*.tmp
+*.class
+.project
+.idea/
+.classpath
+.settings/
+*/target/
+/target/*
+/target/
+*.log
+*.iml
+.DS_Store
+# Package Files #
+*.jar
+*.war
+*.ear
+*.zip
+# filter
