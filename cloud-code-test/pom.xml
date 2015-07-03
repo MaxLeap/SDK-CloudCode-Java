@@ -2,23 +2,23 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>z-cloud-code-java</artifactId>
-    <groupId>com.ilegendsoft</groupId>
+    <artifactId>LAS-cloudcode-sdk</artifactId>
+    <groupId>as.leap</groupId>
     <version>2.2.2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>cloud-code-test-framework</artifactId>
+  <artifactId>cloud-code-test</artifactId>
 
   <dependencies>
     <dependency>
-      <groupId>com.ilegendsoft</groupId>
+      <groupId>as.leap</groupId>
       <artifactId>cloud-code-base</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.ilegendsoft</groupId>
-      <artifactId>cloud-code-sdk-client</artifactId>
+      <groupId>as.leap</groupId>
+      <artifactId>cloud-code-sdk</artifactId>
     </dependency>
   </dependencies>
 
