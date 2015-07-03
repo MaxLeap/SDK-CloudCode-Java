@@ -9,11 +9,11 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>cloud-code-sdk-client</artifactId>
+  <artifactId>cloud-code-sdk</artifactId>
 
   <dependencies>
     <dependency>
-      <groupId>com.ilegendsoft</groupId>
+      <groupId>as.leap</groupId>
       <artifactId>cloud-code-base</artifactId>
     </dependency>
   </dependencies>
