@@ -27,7 +27,7 @@ public class ZLoaderTest {
     Loader loader = new MyLoader();
     loader.main(null);
     Assert.assertEquals(3, loader.definers().size());
-    LASHandler<Request, Response> handler = loader.definers().get(RequestCategory.FUNCTION.alias()).getZHandler("hello");
+    LASHandler<Request, Response> handler = loader.definers().get(RequestCategory.FUNCTION.alias()).getHandler("hello");
     Assert.assertNotNull(handler.handle(new LASRequest(null)));
   }
 

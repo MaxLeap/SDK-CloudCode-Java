@@ -37,7 +37,7 @@ public abstract class TestCloudCode {
     if (definer == null) {
       System.err.println("doesn't exist function definer");
     } else {
-      LASHandler<Request, Response> handler = definer.getZHandler(name);
+      LASHandler<Request, Response> handler = definer.getHandler(name);
       if (handler != null) {
         try {
           response = handler.handle(request);
@@ -66,7 +66,7 @@ public abstract class TestCloudCode {
     if (definer == null) {
       logger.error("doesn't exist job definer");
     } else {
-      LASHandler<Request, Response> handler = definer.getZHandler(name);
+      LASHandler<Request, Response> handler = definer.getHandler(name);
       if (handler != null) {
         final JobRunner jobRunner = new JobRunner(handler, request);
         jobRunner.start();

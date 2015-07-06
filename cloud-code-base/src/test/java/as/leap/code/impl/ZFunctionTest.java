@@ -38,7 +38,7 @@ public class ZFunctionTest {
     });
     final Request request = new LASRequest(null);
     //invoke defined function.
-    Response response = functions.getZHandler(functionName).handle(request);
+    Response response = functions.getHandler(functionName).handle(request);
     Assert.assertTrue(response.succeeded());
     Assert.assertEquals("world.", response.getResult());
   }
@@ -56,7 +56,7 @@ public class ZFunctionTest {
 
     final Request request = new LASRequest(null);
     //invoke defined function.
-    Response response = functions.getZHandler(functionName).handle(request);
+    Response response = functions.getHandler(functionName).handle(request);
     Assert.assertFalse(response.succeeded());
     Assert.assertEquals("fail", response.getError());
 
@@ -76,7 +76,7 @@ public class ZFunctionTest {
     });
     final Request request = new LASRequest("100");
     //invoke defined function.
-    Response response = functions.getZHandler(functionName).handle(request);
+    Response response = functions.getHandler(functionName).handle(request);
     Assert.assertTrue(response.succeeded());
     Assert.assertEquals(101, response.getResult());
   }
@@ -112,7 +112,7 @@ public class ZFunctionTest {
     String bookJsonStr = LASJsonParser.asJson(bookJson);
     final Request request = new LASRequest(bookJsonStr);
     //invoke defined function.
-    Response response = functions.getZHandler(functionName).handle(request);
+    Response response = functions.getHandler(functionName).handle(request);
     String responseJsonStr = LASJsonParser.asJson(response.getResult());
     List<Book> bookList = LASJsonParser.asObject(responseJsonStr, ((LASResponse) response).getResultType());
     Assert.assertEquals(1, bookList.size());

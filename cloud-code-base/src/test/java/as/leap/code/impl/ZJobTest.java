@@ -28,7 +28,7 @@ public class ZJobTest {
     });
 
     //invoke defined job directly.
-    String result = (String) jobs.getZHandler(jobName).handle(new LASRequest("progress")).getResult();
+    String result = (String) jobs.getHandler(jobName).handle(new LASRequest("progress")).getResult();
     Assert.assertTrue("done".equals(result));
   }
 

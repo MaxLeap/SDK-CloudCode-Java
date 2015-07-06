@@ -23,7 +23,7 @@ public interface Definer {
    * @param name
    * @return
    */
-  LASHandler<Request, Response> getZHandler(String name);
+  LASHandler<Request, Response> getHandler(String name);
 
   /**
    * get name of all handler

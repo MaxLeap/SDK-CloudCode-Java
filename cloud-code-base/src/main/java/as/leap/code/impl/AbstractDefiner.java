@@ -20,7 +20,7 @@ abstract class AbstractDefiner implements Definer {
   }
 
   @Override
-  public LASHandler<Request, Response> getZHandler(String name) {
+  public LASHandler<Request, Response> getHandler(String name) {
     return (LASHandler<Request, Response>) handlers.get(name);
   }
 
