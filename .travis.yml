@@ -9,6 +9,7 @@ branches:
   - develop
 
 notifications:
+  slack: ilegendsoft:Ub9XZ7ohD1Eg5sdVgGLpSYjM
   email:
   - xxliu@ilegendsoft.com
   - yyang@ilegendsoft.com
