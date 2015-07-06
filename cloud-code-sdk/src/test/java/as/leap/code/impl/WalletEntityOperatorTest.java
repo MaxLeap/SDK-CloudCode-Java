@@ -1,6 +1,6 @@
 package as.leap.code.impl;
 
-import as.leap.code.assist.entity.Wallet;
+import as.leap.code.assist.classes.Wallet;
 import as.leap.las.sdk.*;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,12 +16,12 @@ public class WalletEntityOperatorTest {
 
   @Before
   public void before() {
-    WalletEntityOperator.DEFAULT_API_ADDRESS_PREFIX = "http://apiuat.zcloud.io/2.0";
+    WalletLASClassManager.DEFAULT_API_ADDRESS_PREFIX = "http://apiuat.zcloud.io/2.0";
   }
 
   @Test
   public void baseOperatorLifeCycleTest() {
-    WalletEntityOperator walletEntityOperator = new WalletEntityOperator(Wallet.class);
+    WalletLASClassManager walletEntityOperator = new WalletLASClassManager(Wallet.class);
     //create
     Wallet wallet = new Wallet();
     wallet.setuId("testuid");
@@ -34,7 +34,7 @@ public class WalletEntityOperatorTest {
     //findById
     Wallet wallet1 = walletEntityOperator.findById(saveMsg.objectIdString());
     Assert.assertNotNull(wallet1);
-    System.out.println(ZJsonParser.asJson(wallet1));
+    System.out.println(LASJsonParser.asJson(wallet1));
     Assert.assertEquals("testuid", wallet1.getuId());
 
     //update

@@ -9,14 +9,14 @@ import org.junit.Test;
  */
 public class ZLoaderTest {
 
-  private static class MyLASLoader extends LASLoaderBase implements LASLoader {
+  private static class MyLoader extends LoaderBase implements Loader {
     @Override
     public void main(GlobalConfig config) {
-      defineFunction("hello", new ZHandler<ZRequest, ZResponse<String>>() {
+      defineFunction("hello", new LASHandler<LASRequest, LASResponse<String>>() {
         @Override
-        public ZResponse<String> handle(ZRequest request) {
+        public LASResponse<String> handle(LASRequest request) {
           Assert.assertNotNull(request);
-          return new ZResponse<String>(String.class);
+          return new LASResponse<String>(String.class);
         }
       });
     }
@@ -24,11 +24,11 @@ public class ZLoaderTest {
 
   @Test
   public void loader() {
-    LASLoader loader = new MyLASLoader();
+    Loader loader = new MyLoader();
     loader.main(null);
     Assert.assertEquals(3, loader.definers().size());
-    ZHandler<Request, Response> handler = loader.definers().get(RequestCategory.FUNCTION.alias()).getZHandler("hello");
-    Assert.assertNotNull(handler.handle(new ZRequest(null)));
+    LASHandler<Request, Response> handler = loader.definers().get(RequestCategory.FUNCTION.alias()).getZHandler("hello");
+    Assert.assertNotNull(handler.handle(new LASRequest(null)));
   }
 
 }

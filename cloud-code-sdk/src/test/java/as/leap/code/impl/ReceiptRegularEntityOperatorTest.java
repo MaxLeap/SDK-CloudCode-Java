@@ -1,6 +1,6 @@
 package as.leap.code.impl;
 
-import as.leap.code.assist.entity.ReceiptRegular;
+import as.leap.code.assist.classes.ReceiptRegular;
 import as.leap.las.sdk.*;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,12 +16,12 @@ public class ReceiptRegularEntityOperatorTest {
 
   @Before
   public void before() {
-    ReceiptRegularEntityOperator.DEFAULT_API_ADDRESS_PREFIX = "http://apiuat.zcloud.io/2.0";
+    ReceiptRegularLASClassManager.DEFAULT_API_ADDRESS_PREFIX = "http://apiuat.zcloud.io/2.0";
   }
 
   @Test
   public void baseOperatorLifeCycleTest() {
-    ReceiptRegularEntityOperator receiptRegularEntityOperator = new ReceiptRegularEntityOperator(ReceiptRegular.class);
+    ReceiptRegularLASClassManager receiptRegularEntityOperator = new ReceiptRegularLASClassManager(ReceiptRegular.class);
     //create
     ReceiptRegular receiptRegular = new ReceiptRegular();
     receiptRegular.setName("slvtest");
@@ -39,7 +39,7 @@ public class ReceiptRegularEntityOperatorTest {
     //findById
     ReceiptRegular receiptRegular1 = receiptRegularEntityOperator.findById(saveMsg.objectIdString());
     Assert.assertNotNull(receiptRegular1);
-    System.out.println(ZJsonParser.asJson(receiptRegular1));
+    System.out.println(LASJsonParser.asJson(receiptRegular1));
     Assert.assertEquals("slvtest", receiptRegular1.getName());
 
     //update

@@ -22,7 +22,7 @@ public class GlobalConfig {
   }
 
   public GlobalConfig(String jsonStr) {
-    this(ZJsonParser.asJsonNode(jsonStr));
+    this(LASJsonParser.asJsonNode(jsonStr));
     this.configJsonStr = jsonStr;
   }
 

@@ -2,7 +2,7 @@ package as.leap.code.test.framework;
 
 import as.leap.code.*;
 import as.leap.code.impl.*;
-import as.leap.code.impl.ZJsonParser;
+import as.leap.code.impl.LASJsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import sun.net.www.protocol.file.FileURLConnection;
 
@@ -25,10 +25,10 @@ class BootstrapZCloud {
 
   private GlobalConfig globalConfig;
   private static final Logger logger = LoggerFactory.getLogger(BootstrapZCloud.class);
-  private LASLoaderBase loader;
+  private LoaderBase loader;
   private ClassLoader classLoader;
   private Set<Class> hookEntities;
-  private Map<String, ZEntityManagerHandler> entityManagerHandlerMap = new ConcurrentHashMap<String, ZEntityManagerHandler>();
+  private Map<String, LASClassManagerHandler> entityManagerHandlerMap = new ConcurrentHashMap<String, LASClassManagerHandler>();
   private String restAddr;
 
   public void setRestAddr(String restAddr) {
@@ -43,7 +43,7 @@ class BootstrapZCloud {
       loadHookAndManager(globalConfig.getPackageHook());
     }
     cacheEntity(globalConfig);
-    AssistEntityOperatorImpl.DEFAULT_API_ADDRESS_PREFIX = this.restAddr;
+    AssistLASClassManagerImpl.DEFAULT_API_ADDRESS_PREFIX = this.restAddr;
     loadMain(globalConfig.getCodeMain());
   }
 
@@ -57,7 +57,7 @@ class BootstrapZCloud {
       StringBuilder globalBuilder = new StringBuilder();
       String line;
       while ((line = reader.readLine()) != null) globalBuilder.append(line);
-      jsonNode = ZJsonParser.asJsonNode(globalBuilder.toString());
+      jsonNode = LASJsonParser.asJsonNode(globalBuilder.toString());
     } catch (LASException e) {
       throw new LASException("Your global.json config is not match json format.Please check your config. Caused by "+ e.getMessage());
     } catch (IOException e) {
@@ -66,17 +66,17 @@ class BootstrapZCloud {
     return new GlobalConfig(jsonNode);
   }
 
-  public ZEntityManagerHandler getEntityManagerHandler(String managerName) {
+  public LASClassManagerHandler getEntityManagerHandler(String managerName) {
     return entityManagerHandlerMap.get(managerName);
   }
 
-  public LASLoader getLoader() {
+  public Loader getLoader() {
     return this.loader;
   }
 
   private void loadMain(String userMainClassPath) throws Exception {
     @SuppressWarnings("unchecked")
-    Class<LASLoaderBase> clazz = (Class<LASLoaderBase>) Class.forName(userMainClassPath);
+    Class<LoaderBase> clazz = (Class<LoaderBase>) Class.forName(userMainClassPath);
     loader = clazz.newInstance();
     loader.main(globalConfig);
   }
@@ -91,8 +91,8 @@ class BootstrapZCloud {
         allEntity.removeAll(hookEntities);
         //建立空的entityManager
         for (Class<?> entityClazz : allEntity) {
-          ZEntityManager entityManager = new ZEntityManagerImpl(globalConfig.getApplicationID(), globalConfig.getApplicationKey(), null, entityClazz, restAddr);
-          ZEntityManagerFactory.putManager(entityClazz, entityManager);
+          LASClassManager entityManager = new LASClassManagerImpl(globalConfig.getApplicationID(), globalConfig.getApplicationKey(), null, entityClazz, restAddr);
+          LASClassManagerFactory.putManager(entityClazz, entityManager);
           logger.info("cache entity to factory:" + entityClazz.getSimpleName());
         }
       } catch (ClassNotFoundException e) {
@@ -123,9 +123,9 @@ class BootstrapZCloud {
   private void parseClass(String hookPackage, String clazzName) {
     try {
       Class hookClazz = Thread.currentThread().getContextClassLoader().loadClass(hookPackage + "." + clazzName);
-      EntityManager entityManagerAnnotation = (EntityManager) hookClazz.getAnnotation(EntityManager.class);
-      if (entityManagerAnnotation == null) return;
-      String managerName = entityManagerAnnotation.value();
+      ClassManager classManagerAnnotation = (ClassManager) hookClazz.getAnnotation(ClassManager.class);
+      if (classManagerAnnotation == null) return;
+      String managerName = classManagerAnnotation.value();
       if (managerName.equals("")) {
         String[] managerNames = managerName.split("ManagerHook");
         if (managerNames.length >= 2) {
@@ -139,12 +139,12 @@ class BootstrapZCloud {
           }
         }
       }
-      ZEntityManagerHookBase hook = (ZEntityManagerHookBase) hookClazz.newInstance();
+      LASClassManagerHookBase hook = (LASClassManagerHookBase) hookClazz.newInstance();
       Type[] types = ((ParameterizedType) hookClazz.getGenericSuperclass()).getActualTypeArguments();
       Class entityClazz = (Class) types[0];
-      ZEntityManager entityManager = new ZEntityManagerImpl(globalConfig.getApplicationID(), globalConfig.getApplicationKey(), hook, entityClazz, restAddr);
-      entityManagerHandlerMap.put(managerName, new ZEntityManagerHandler(entityManager, hook, entityClazz));
-      ZEntityManagerFactory.putManager(entityClazz, entityManager);
+      LASClassManager entityManager = new LASClassManagerImpl(globalConfig.getApplicationID(), globalConfig.getApplicationKey(), hook, entityClazz, restAddr);
+      entityManagerHandlerMap.put(managerName, new LASClassManagerHandler(entityManager, hook, entityClazz));
+      LASClassManagerFactory.putManager(entityClazz, entityManager);
       logger.info("cache entity to factory:" + entityClazz.getSimpleName());
       hookEntities.add(entityClazz);
     } catch (Exception ex) {

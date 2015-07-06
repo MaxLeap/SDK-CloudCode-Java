@@ -2,7 +2,7 @@ package as.leap.code.impl;
 
 import as.leap.code.Request;
 import as.leap.code.Response;
-import as.leap.code.ZHandler;
+import as.leap.code.LASHandler;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,25 +18,25 @@ import java.util.Map;
  */
 public class ZFunctionTest {
 
-  private ZDefineFunction functions;
+  private DefineFunction functions;
   private String functionName = "functionName";
 
   @Before
   public void before() {
-    functions = new ZDefineFunction();
+    functions = new DefineFunction();
   }
 
   @Test
   public void functionWithoutParams() {
-    functions.define(functionName, new ZHandler<Request, Response<String>>() {
+    functions.define(functionName, new LASHandler<Request, Response<String>>() {
       @Override
       public Response<String> handle(Request request) {
-        Response<String> response = new ZResponse<String>(String.class);
+        Response<String> response = new LASResponse<String>(String.class);
         response.setResult("world.");
         return response;
       }
     });
-    final Request request = new ZRequest(null);
+    final Request request = new LASRequest(null);
     //invoke defined function.
     Response response = functions.getZHandler(functionName).handle(request);
     Assert.assertTrue(response.succeeded());
@@ -45,16 +45,16 @@ public class ZFunctionTest {
 
   @Test
   public void functionWithFail() {
-    functions.define(functionName, new ZHandler<Request, Response>() {
+    functions.define(functionName, new LASHandler<Request, Response>() {
       @Override
       public Response handle(Request request) {
-        Response<String> response = new ZResponse<String>(String.class);
+        Response<String> response = new LASResponse<String>(String.class);
         response.setError("fail");
         return response;
       }
     });
 
-    final Request request = new ZRequest(null);
+    final Request request = new LASRequest(null);
     //invoke defined function.
     Response response = functions.getZHandler(functionName).handle(request);
     Assert.assertFalse(response.succeeded());
@@ -64,17 +64,17 @@ public class ZFunctionTest {
 
   @Test
   public void functionWithInteger() {
-    functions.define(functionName, new ZHandler<Request, Response<Integer>>() {
+    functions.define(functionName, new LASHandler<Request, Response<Integer>>() {
       @Override
       public Response<Integer> handle(Request request) {
         int value = request.parameter(int.class);
         Assert.assertEquals(100, value);
-        Response<Integer> response = new ZResponse<Integer>(int.class);
+        Response<Integer> response = new LASResponse<Integer>(int.class);
         response.setResult(101);
         return response;
       }
     });
-    final Request request = new ZRequest("100");
+    final Request request = new LASRequest("100");
     //invoke defined function.
     Response response = functions.getZHandler(functionName).handle(request);
     Assert.assertTrue(response.succeeded());
@@ -88,7 +88,7 @@ public class ZFunctionTest {
     queryBook.setName("name");
     queryBook.setAuthor("stream");
 
-    functions.define(functionName, new ZHandler<Request, Response<List<Book>>>() {
+    functions.define(functionName, new LASHandler<Request, Response<List<Book>>>() {
       @Override
       public Response<List<Book>> handle(Request request) {
         Book book = request.parameter(Book.class);
@@ -98,7 +98,7 @@ public class ZFunctionTest {
 
         List<Book> books = new ArrayList<Book>();
         books.add(book);
-        Response<List<Book>> response = new ZResponse<List<Book>>(Book.class, true);
+        Response<List<Book>> response = new LASResponse<List<Book>>(Book.class, true);
         response.setResult(books);
         return response;
       }
@@ -109,12 +109,12 @@ public class ZFunctionTest {
     bookJson.put("name", "name");
     bookJson.put("author", "stream");
 
-    String bookJsonStr = ZJsonParser.asJson(bookJson);
-    final Request request = new ZRequest(bookJsonStr);
+    String bookJsonStr = LASJsonParser.asJson(bookJson);
+    final Request request = new LASRequest(bookJsonStr);
     //invoke defined function.
     Response response = functions.getZHandler(functionName).handle(request);
-    String responseJsonStr = ZJsonParser.asJson(response.getResult());
-    List<Book> bookList = ZJsonParser.asObject(responseJsonStr, ((ZResponse) response).getResultType());
+    String responseJsonStr = LASJsonParser.asJson(response.getResult());
+    List<Book> bookList = LASJsonParser.asObject(responseJsonStr, ((LASResponse) response).getResultType());
     Assert.assertEquals(1, bookList.size());
     Book book = bookList.get(0);
     Assert.assertEquals(book.getId(), 100);
