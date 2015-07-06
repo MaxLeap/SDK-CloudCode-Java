@@ -6,9 +6,10 @@ jdk:
 
 branches:
   only:
-  - master
+  - develop
 
 notifications:
   email:
   - xxliu@ilegendsoft.com
+  - yyang@ilegendsoft.com
 
