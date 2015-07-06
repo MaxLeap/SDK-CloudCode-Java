@@ -10,7 +10,7 @@ import org.junit.Test;
 /**
  *
  */
-public class FrameworkTest extends TestZCloud {
+public class FrameworkTest extends TestCloudCode {
 
   public FrameworkTest() throws Exception {
     super("http://apiuat.zcloud.io/2.0");

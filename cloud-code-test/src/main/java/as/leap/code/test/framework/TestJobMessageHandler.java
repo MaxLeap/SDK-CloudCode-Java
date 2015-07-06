@@ -3,7 +3,7 @@ package as.leap.code.test.framework;
 /**
  *
  */
-public interface ZTestJobMessageHandler {
+public interface TestJobMessageHandler {
 
   void message(Object message);
 

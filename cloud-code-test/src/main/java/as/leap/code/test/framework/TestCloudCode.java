@@ -14,26 +14,26 @@ import java.util.Map;
 /**
  *
  */
-public abstract class TestZCloud {
+public abstract class TestCloudCode {
 
-  private static final Logger logger = LoggerFactory.getLogger(TestZCloud.class);
-  private BootstrapZCloud bootstrapZCloud;
+  private static final Logger logger = LoggerFactory.getLogger(TestCloudCode.class);
+  private BootstrapCloudCode bootstrapCloudCode;
 
-  protected TestZCloud() throws Exception{
-    this.bootstrapZCloud = new BootstrapZCloud();
-    this.bootstrapZCloud.start();
+  protected TestCloudCode() throws Exception{
+    this.bootstrapCloudCode = new BootstrapCloudCode();
+    this.bootstrapCloudCode.start();
   }
 
-  protected TestZCloud(String restAddr) throws Exception{
-    this.bootstrapZCloud = new BootstrapZCloud();
-    bootstrapZCloud.setRestAddr(restAddr);
-    this.bootstrapZCloud.start();
+  protected TestCloudCode(String restAddr) throws Exception{
+    this.bootstrapCloudCode = new BootstrapCloudCode();
+    bootstrapCloudCode.setRestAddr(restAddr);
+    this.bootstrapCloudCode.start();
   }
 
   protected Response runFunction(String name, String params) {
     Request request = new LASRequest(params);
     Response response = null;
-    Definer definer = bootstrapZCloud.getLoader().definers().get(RequestCategory.FUNCTION.alias());
+    Definer definer = bootstrapCloudCode.getLoader().definers().get(RequestCategory.FUNCTION.alias());
     if (definer == null) {
       System.err.println("doesn't exist function definer");
     } else {
@@ -62,7 +62,7 @@ public abstract class TestZCloud {
 
   protected void runJob(String name, String params) {
     Request request = new LASRequest(params);
-    Definer definer = bootstrapZCloud.getLoader().definers().get(RequestCategory.JOB.alias());
+    Definer definer = bootstrapCloudCode.getLoader().definers().get(RequestCategory.JOB.alias());
     if (definer == null) {
       logger.error("doesn't exist job definer");
     } else {
@@ -86,14 +86,14 @@ public abstract class TestZCloud {
   }
 
   protected <T> Response runEntityHook(String managerName, DataAccessMethod method, T object) throws Exception {
-    LASClassManagerHandler entityManagerHandler = bootstrapZCloud.getEntityManagerHandler(managerName);
-    JsonNode params = ZJsonParser.asJsonNode(object);
+    LASClassManagerHandler entityManagerHandler = bootstrapCloudCode.getEntityManagerHandler(managerName);
+    JsonNode params = LASJsonParser.asJsonNode(object);
 
     Map<String, Object> requestParams = new HashMap<String, Object>();
     requestParams.put("params", params);
     requestParams.put("method", method == DataAccessMethod.FINDBYID ? "findById" : method.name().toLowerCase());
 
-    Request request = new LASRequest(ZJsonParser.asJson(requestParams));
+    Request request = new LASRequest(LASJsonParser.asJson(requestParams));
     Response response = entityManagerHandler.handle(request);
     return response;
   }

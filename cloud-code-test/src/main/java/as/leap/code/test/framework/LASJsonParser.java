@@ -17,7 +17,7 @@ import java.util.Map;
  * Created by stream.
  * TODO: make exception more clearly.
  */
-abstract class ZJsonParser {
+abstract class LASJsonParser {
 
   private static final ObjectMapper mapper = new ObjectMapper();
   private static final TypeFactory typeFactory = TypeFactory.defaultInstance();

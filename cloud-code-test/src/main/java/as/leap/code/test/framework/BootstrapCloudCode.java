@@ -21,10 +21,10 @@ import java.util.jar.JarFile;
 /**
  *
  */
-class BootstrapZCloud {
+class BootstrapCloudCode {
 
   private GlobalConfig globalConfig;
-  private static final Logger logger = LoggerFactory.getLogger(BootstrapZCloud.class);
+  private static final Logger logger = LoggerFactory.getLogger(BootstrapCloudCode.class);
   private LoaderBase loader;
   private ClassLoader classLoader;
   private Set<Class> hookEntities;
