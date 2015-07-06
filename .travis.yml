@@ -9,7 +9,7 @@ branches:
   - develop
 
 notifications:
-  slack: ilegendsoft:Ub9XZ7ohD1Eg5sdVgGLpSYjM
+  webhooks: https://hook.bearychat.com/=bw63g/travis/7c386582687b61b7e86b12d59b2655b2
   email:
   - xxliu@ilegendsoft.com
   - yyang@ilegendsoft.com
