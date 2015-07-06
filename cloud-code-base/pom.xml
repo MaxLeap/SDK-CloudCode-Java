@@ -14,7 +14,7 @@
   <dependencies>
     <dependency>
       <groupId>as.leap</groupId>
-      <artifactId>las-sdk-data-api</artifactId>
+      <artifactId>sdk-data-api</artifactId>
     </dependency>
   </dependencies>
 

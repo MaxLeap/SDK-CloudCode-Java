@@ -9,7 +9,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>cloud-code-test-framework</artifactId>
+  <artifactId>cloud-code-test</artifactId>
 
   <dependencies>
     <dependency>

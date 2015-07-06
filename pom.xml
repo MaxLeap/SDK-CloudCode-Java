@@ -67,23 +67,18 @@
       <dependency>
         <groupId>as.leap</groupId>
         <artifactId>cloud-code-base</artifactId>
-        <version>2.2.2-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>as.leap</groupId>
         <artifactId>cloud-code-sdk</artifactId>
-        <version>2.2.2-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
         <groupId>as.leap</groupId>
-        <artifactId>las-sdk-data-api</artifactId>
+        <artifactId>sdk-data-api</artifactId>
         <version>${las-sdk-data-api.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.codahale.metrics</groupId>
-        <artifactId>metrics-core</artifactId>
-        <version>${metrics.version}</version>
       </dependency>
 
       <dependency>
