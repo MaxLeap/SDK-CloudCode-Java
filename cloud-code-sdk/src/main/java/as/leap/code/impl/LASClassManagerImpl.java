@@ -50,7 +50,7 @@ public class LASClassManagerImpl<T> implements LASClassManager<T> {
       BeforeResult<T> beforeResult = hook == null ? new BeforeResult<T>(object, true) : hook.beforeCreate(object);
       if (!beforeResult.isResult()) return new SaveResult<T>(beforeResult.getFailMessage());
       String response = WebUtils.doPost(getAPIAddress(), getHeader(), LASJsonParser.asJson(object), DEFAULT_TIMEOUT, DEFAULT_READ_TIMEOUT);
-      LOGGER.info("get response of create[" + className + "]:" + response);
+      LOGGER.info("get response of create[" + getAPIAddress() + "]:" + response);
       SaveMsg saveMsg = LASJsonParser.asObject(response, SaveMsg.class);
       SaveResult saveResult = new SaveResult<T>(beforeResult, saveMsg);
       if (hook == null) return saveResult;
@@ -73,7 +73,7 @@ public class LASClassManagerImpl<T> implements LASClassManager<T> {
     try {
       String postQuery = serializeLasQueryForPostQuest(query);
       String response = WebUtils.doPost(getAPIAddress() + "/query", getHeader(), postQuery, DEFAULT_TIMEOUT, DEFAULT_READ_TIMEOUT);
-      LOGGER.info("get response of find[" + className + "](" + postQuery + "):" + response);
+      LOGGER.info("get response of find[" + getAPIAddress() + "/query](" + postQuery + "):" + response);
       JsonNode responseJson = LASJsonParser.asJsonNode(response);
       ArrayNode results = (ArrayNode) responseJson.get("results");
       List<T> r = new ArrayList<T>();
@@ -92,7 +92,7 @@ public class LASClassManagerImpl<T> implements LASClassManager<T> {
   public T findById(String id) throws LASException {
     try {
       String response = WebUtils.doGet(getAPIAddress() + "/" + id, getHeader(), null);
-      LOGGER.info("get response of findById[" + className + "](" + id + "):" + response);
+      LOGGER.info("get response of findById[" + getAPIAddress() + "/" + id + "]:" + response);
       if ("{}".equals(response)) return null;
       return LASJsonParser.asObject(response, entityClazz);
     } catch (IOException e) {
@@ -105,7 +105,7 @@ public class LASClassManagerImpl<T> implements LASClassManager<T> {
   public UpdateMsg update(String id, LASUpdate update) throws LASException {
     try {
       String response = WebUtils.doPut(getAPIAddress() + "/" + id, getHeader(), LASJsonParser.asJson(update.update()), DEFAULT_TIMEOUT, DEFAULT_READ_TIMEOUT);
-      LOGGER.info("get response of update[" + className + "](" + id + "-->" + update.update() + "):" + response);
+      LOGGER.info("get response of update[" + getAPIAddress() + "/" + id + "](" + update.update() + "):" + response);
       UpdateMsg updateMsg = LASJsonParser.asObject(response, UpdateMsg.class);
       if (hook != null) hook.afterUpdate(id, updateMsg);
       return updateMsg;
@@ -121,7 +121,7 @@ public class LASClassManagerImpl<T> implements LASClassManager<T> {
     if (!beforeResult.isResult()) return new DeleteResult(beforeResult.getFailMessage());
     try {
       String response = WebUtils.doDelete(getAPIAddress() + "/" + id, getHeader(), null);
-      LOGGER.info("get response of delete[" + className + "](" + id + "):" + response);
+      LOGGER.info("get response of delete[" + getAPIAddress() + "/" + id + "]:" + response);
       DeleteMsg deleteMsg = LASJsonParser.asObject(response, DeleteMsg.class);
       DeleteResult deleteResult = new DeleteResult(beforeResult, deleteMsg);
       if (hook == null) return deleteResult;
@@ -145,7 +145,7 @@ public class LASClassManagerImpl<T> implements LASClassManager<T> {
       ObjectNode params = JsonNodeFactory.instance.objectNode();
       params.put("objectIds", arrays);
       String response = WebUtils.doPost(getAPIAddress() + "/delete", getHeader(), params.toString(), DEFAULT_TIMEOUT, DEFAULT_READ_TIMEOUT);
-      LOGGER.info("get response of deleteBatch[" + className + "](" + ids + "):" + response);
+      LOGGER.info("get response of deleteBatch[" + getAPIAddress() + "/delete](" + ids + "):" + response);
       return new DeleteResult<String[]>(beforeResult, LASJsonParser.asObject(response, DeleteMsg.class));
     } catch (Exception e) {
       e.printStackTrace();
