@@ -31,7 +31,7 @@
 
   <profiles>
     <profile>
-      <id>sso</id>
+      <id>oss</id>
       <build>
         <plugins>
           <plugin>
