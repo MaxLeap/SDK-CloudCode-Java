@@ -17,9 +17,9 @@ public class WalletLASClassManager extends AssistLASClassManagerImpl<Wallet> {
     super(walletClass);
   }
 
-  public UpdateMsg consume(String id, Wallet wallet) {
+  public UpdateMsg consume(Map params) {
     try {
-      String response = WebUtils.doPost(getAPIAddress() + "/" + id + "/consume", getHeader(), LASJsonParser.asJson(wallet), DEFAULT_TIMEOUT, DEFAULT_READ_TIMEOUT);
+      String response = WebUtils.doPost(getAPIAddress() + "/consume", getHeader(), LASJsonParser.asJson(params), DEFAULT_TIMEOUT, DEFAULT_READ_TIMEOUT);
       LOGGER.info("get response of consume[" + getAPIAddress() + "]:" + response);
       return LASJsonParser.asObject(response, UpdateMsg.class);
     } catch (Exception e) {

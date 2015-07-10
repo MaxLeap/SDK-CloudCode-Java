@@ -57,10 +57,11 @@ public class WalletEntityOperatorTest {
     Assert.assertNotNull(walletFindMsg.results().get(0).objectIdString());
 
     //consume
-    Wallet wallet2 = new Wallet();
-    wallet2.setProducts(new HashMap<String, Double>());
+    Map params1 = new HashMap();
+    params1.put("products", new HashMap());
+    params1.put("walletId", saveMsg.objectIdString());
     try {
-      UpdateMsg updateMsg1 = walletEntityOperator.consume(saveMsg.objectIdString(), wallet2);
+      UpdateMsg updateMsg1 = walletEntityOperator.consume(params1);
     } catch (Exception e) {
       Assert.assertTrue(e.getMessage().contains("products can't be null!"));
     }
