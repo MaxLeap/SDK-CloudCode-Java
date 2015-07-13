@@ -8,6 +8,12 @@
   <name>Cloud code java sdk - Parent Project</name>
   <packaging>pom</packaging>
 
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
+
   <modules>
     <module>cloud-code-base</module>
     <module>cloud-code-sdk</module>
@@ -15,7 +21,8 @@
   </modules>
 
   <url>https://github.com/LeapAppServices/LAS-SDK-CloudCode-Java</url>
-
+	<description>Leap.as cloud code Java API</description>
+	
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
@@ -23,19 +30,19 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-
+  
   <developers>
     <developer>
       <id>sdyy321</id>
       <name>yangyong</name>
       <email>yyang@ilegendsoft.com</email>
     </developer>
-		<developer>
+    <developer>
       <id>sly</id>
       <name>lvshun</name>
       <email>slv@ilegendsoft.com</email>
     </developer>
-		<developer>
+    <developer>
       <id>leo3877</id>
       <name>zhaojing</name>
       <email>jzhao@ilegendsoft.com</email>
