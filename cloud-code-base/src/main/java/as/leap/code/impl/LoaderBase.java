@@ -38,8 +38,8 @@ public abstract class LoaderBase implements Loader {
     logger.info("Deployed Cloud Job :" + name);
   }
 
-  void defineManager(String name, LASHandler<? extends Request, ? extends Response> handler) {
+  void defineClassesManager(String name, LASHandler<? extends Request, ? extends Response> handler) {
     managerDefiner.define(name, handler);
-    logger.info("Deployed Cloud Entity Manager :" + name);
+    logger.info("Deployed Cloud Classes Manager :" + name);
   }
 }

@@ -8,14 +8,14 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class LASClassManagerFactory {
 
-  private static Map<Class, LASClassManager> managerMap = new ConcurrentHashMap<Class, LASClassManager>();
+  private static Map<Class<?>, LASClassManager> managerMap = new ConcurrentHashMap<Class<?>, LASClassManager>();
 
-  public static void putManager(Class clazz, LASClassManager entityManager) {
+  public static <T> void putManager(Class<T> clazz, LASClassManager<T> entityManager) {
     managerMap.put(clazz, entityManager);
   }
 
-  public static LASClassManager getManager(Class clazz) {
-    return managerMap.get(clazz);
+  public static <T> LASClassManager<T> getManager(Class<T> clazz) {
+    return (LASClassManager<T>)managerMap.get(clazz);
   }
 
 }

@@ -5,7 +5,7 @@ package as.leap.code;
  */
 public class AfterResult<T> {
 
-  private Object result;
+  private T result;
 
   /*checking result*/
   private boolean success;
@@ -13,7 +13,7 @@ public class AfterResult<T> {
   /*the reason of fail, for the response*/
   private String failMessage;
 
-  public AfterResult(Object result) {
+  public AfterResult(T result) {
     this.result = result;
     this.success = true;
   }
@@ -23,11 +23,11 @@ public class AfterResult<T> {
     this.failMessage = failMessage;
   }
 
-  public Object getResult() {
+  public T getResult() {
     return result;
   }
 
-  public void setResult(Object result) {
+  public void setResult(T result) {
     this.result = result;
   }
 
