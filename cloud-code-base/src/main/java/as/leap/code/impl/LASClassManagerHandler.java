@@ -132,15 +132,15 @@ public final class LASClassManagerHandler<T> implements LASHandler<Request, Resp
         String order = queryObject.get("order").textValue();
         JsonNode query = queryObject.get("query");
 
-        LASQuery sunQuery = null;
+        LASQuery lasQuery = null;
         List<String> keys1 = null;
         if (keys != null) {
           keys1 = Arrays.asList(keys.split(","));
         }
         if (query != null) {
-          sunQuery = new LASQuery(LASJsonParser.jsonNodeToMap(query), keys1);
+          lasQuery = new LASQuery(LASJsonParser.jsonNodeToMap(query), keys1);
         } else {
-          sunQuery = new LASQuery(new HashMap(), keys1);
+          lasQuery = new LASQuery(new HashMap(), keys1);
         }
 
         if (order != null) {
@@ -152,18 +152,18 @@ public final class LASClassManagerHandler<T> implements LASHandler<Request, Resp
               orderMap.put(temp, 1);
             }
           }
-          sunQuery.setSort(orderMap);
+          lasQuery.setSort(orderMap);
         }
 
-        sunQuery.setSkip(skip);
-        sunQuery.setLimit(limit);
+        lasQuery.setSkip(skip);
+        lasQuery.setLimit(limit);
 
-        sunQuery.setIncludes(include);
+        lasQuery.setIncludes(include);
 
         Response findResponse = new LASResponse(FindMsg.class);
 
         try {
-          FindMsg<T> ob = entityManager.find(sunQuery, type != null && type == 4);
+          FindMsg<T> ob = entityManager.find(lasQuery, type != null && type == 4);
           findResponse.setResult(ob);
         } catch (Exception e) {
           logger.error(e.getMessage(), e);

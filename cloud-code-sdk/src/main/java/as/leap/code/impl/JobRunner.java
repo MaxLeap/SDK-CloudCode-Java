@@ -46,7 +46,7 @@ public class JobRunner<T> extends Thread {
         logger.error(response.getError());
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.error(e.getMessage(), e);
     }
     running = false;
   }

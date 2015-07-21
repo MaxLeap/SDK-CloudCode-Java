@@ -86,7 +86,7 @@ public abstract class TestCloudCode {
   }
 
   protected <T> Response runEntityHook(String managerName, DataAccessMethod method, T object) throws Exception {
-    LASClassManagerHandler entityManagerHandler = bootstrapCloudCode.getEntityManagerHandler(managerName);
+    LASClassManagerHandler entityManagerHandler = bootstrapCloudCode.getClassesManagerHandler(managerName);
     JsonNode params = LASJsonParser.asJsonNode(object);
 
     Map<String, Object> requestParams = new HashMap<String, Object>();

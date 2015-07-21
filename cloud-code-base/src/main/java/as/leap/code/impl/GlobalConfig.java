@@ -12,7 +12,7 @@ public class GlobalConfig {
   private String applicationID;
   private String applicationKey;
   private String packageHook;
-  private String packageEntity;
+  private String packageClasses;
   private String codeMain;
   private String version;
 
@@ -27,28 +27,38 @@ public class GlobalConfig {
   }
 
   public GlobalConfig(JsonNode jsonNode) {
-    if (!jsonNode.has("applicationId")) throw new LASException("Your applicationId is miss.Please check your global.json config.");
+    if (!jsonNode.has("applicationId"))
+      throw new LASException("Your applicationId is miss.Please check your global.json config.");
     applicationID = jsonNode.get("applicationId").asText();
-    if (applicationID == null || applicationID.trim().equals("")) throw new LASException("Your applicationId is empty.Please check your global.json config.");
+    if (applicationID == null || applicationID.trim().equals(""))
+      throw new LASException("Your applicationId is empty.Please check your global.json config.");
 
-    if (!jsonNode.has("applicationKey")) throw new LASException("Your applicationKey is miss.Please check your global.json config.");
+    if (!jsonNode.has("applicationKey"))
+      throw new LASException("Your applicationKey is miss.Please check your global.json config.");
     applicationKey = jsonNode.get("applicationKey").asText();
-    if (applicationKey == null || applicationKey.trim().equals("")) throw new LASException("Your applicationKey is empty.Please check your global.json config.");
+    if (applicationKey == null || applicationKey.trim().equals(""))
+      throw new LASException("Your applicationKey is empty.Please check your global.json config.");
 
-    if (!jsonNode.has("applicationName")) throw new LASException("Your applicationName is miss.Please check your global.json config.");
+    if (!jsonNode.has("version")) throw new LASException("Your version is miss.Please check your global.json config.");
+    version = jsonNode.get("version").asText();
+    if (version == null || version.trim().equals(""))
+      throw new LASException("Your version is empty.Please check your global.json config.");
+
+    if (!jsonNode.has("applicationName"))
+      throw new LASException("Your applicationName is miss.Please check your global.json config.");
     applicationName = jsonNode.get("applicationName").asText();
-    if (applicationName == null || applicationName.trim().equals("")) throw new LASException("Your applicationName is empty.Please check your global.json config.");
+    if (applicationName == null || applicationName.trim().equals(""))
+      throw new LASException("Your applicationName is empty.Please check your global.json config.");
 
-    if (!jsonNode.has("java-main")) throw new LASException("Your java-main is miss.Please check your global.json config.");
-    codeMain = jsonNode.get("java-main").asText();
-    if (codeMain == null || codeMain.trim().equals("")) throw new LASException("Your java-main is empty.Please check your global.json config.");
+    if (!jsonNode.has("javaMain"))
+      throw new LASException("Your javaMain is miss.Please check your global.json config.");
+    codeMain = jsonNode.get("javaMain").asText();
+    if (codeMain == null || codeMain.trim().equals(""))
+      throw new LASException("Your javaMain is empty.Please check your global.json config.");
 
-    packageHook = jsonNode.has("package-hook") ? jsonNode.path("package-hook").asText() : null;
-    packageEntity = jsonNode.has("package-entity") ? jsonNode.path("package-entity").asText() : null;
+    packageHook = jsonNode.has("packageHook") ? jsonNode.path("packageHook").asText() : null;
+    packageClasses = jsonNode.has("packageClasses") ? jsonNode.path("packageClasses").asText() : null;
 
-    if (!jsonNode.has("global") || !jsonNode.get("global").has("zVersion")) throw new LASException("Your global zVersion is miss.Please check your global.json config.");
-    version = jsonNode.get("global").get("zVersion").asText();
-    if (version == null || version.trim().equals("")) throw new LASException("Your global zVersion is empty.Please check your global.json config.");
     this.configJsonStr = jsonNode.toString();
   }
 
@@ -100,12 +110,12 @@ public class GlobalConfig {
     this.packageHook = packageHook;
   }
 
-  public String getPackageEntity() {
-    return packageEntity;
+  public String getPackageClasses() {
+    return packageClasses;
   }
 
-  public void setPackageEntity(String packageEntity) {
-    this.packageEntity = packageEntity;
+  public void setPackageClasses(String packageClasses) {
+    this.packageClasses = packageClasses;
   }
 
   public String getVersion() {
@@ -123,7 +133,7 @@ public class GlobalConfig {
         ", applicationID='" + applicationID + '\'' +
         ", applicationKey='" + applicationKey + '\'' +
         ", packageHook='" + packageHook + '\'' +
-        ", packageEntity='" + packageEntity + '\'' +
+        ", packageClasses='" + packageClasses + '\'' +
         ", codeMain='" + codeMain + '\'' +
         ", version='" + version + '\'' +
         '}';

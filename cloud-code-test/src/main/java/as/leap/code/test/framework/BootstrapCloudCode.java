@@ -27,8 +27,8 @@ class BootstrapCloudCode {
   private static final Logger logger = LoggerFactory.getLogger(BootstrapCloudCode.class);
   private LoaderBase loader;
   private ClassLoader classLoader;
-  private Set<Class> hookEntities;
-  private Map<String, LASClassManagerHandler> entityManagerHandlerMap = new ConcurrentHashMap<String, LASClassManagerHandler>();
+  private Set<Class> hookClasses;
+  private Map<String, LASClassManagerHandler> classesManagerHandlerMap = new ConcurrentHashMap<String, LASClassManagerHandler>();
   private String restAddr;
 
   public void setRestAddr(String restAddr) {
@@ -37,12 +37,12 @@ class BootstrapCloudCode {
 
   public void start() throws Exception {
     globalConfig = loadConfig();
-    hookEntities = new HashSet<Class>();
+    hookClasses = new HashSet<Class>();
     if (globalConfig.getPackageHook() != null && !isBlank(globalConfig.getPackageHook())) {
       //load hook and manager
       loadHookAndManager(globalConfig.getPackageHook());
     }
-    cacheEntity(globalConfig);
+    cacheClasses(globalConfig);
     AssistLASClassManagerImpl.DEFAULT_API_ADDRESS_PREFIX = this.restAddr;
     loadMain(globalConfig.getCodeMain());
   }
@@ -66,8 +66,8 @@ class BootstrapCloudCode {
     return new GlobalConfig(jsonNode);
   }
 
-  public LASClassManagerHandler getEntityManagerHandler(String managerName) {
-    return entityManagerHandlerMap.get(managerName);
+  public LASClassManagerHandler getClassesManagerHandler(String managerName) {
+    return classesManagerHandlerMap.get(managerName);
   }
 
   public Loader getLoader() {
@@ -81,19 +81,19 @@ class BootstrapCloudCode {
     loader.main(globalConfig);
   }
 
-  private void cacheEntity(GlobalConfig globalConfig) {
+  private void cacheClasses(GlobalConfig globalConfig) {
     //处理不存在hook的entity
-    String entityPackage = globalConfig.getPackageEntity();
-    if (entityPackage != null && !entityPackage.trim().equals("")) {
+    String classesPackage = globalConfig.getPackageClasses();
+    if (classesPackage != null && !classesPackage.trim().equals("")) {
       try {
-        List<Class<?>> allEntity = getClassesForPackage(classLoader, entityPackage);
-        if (allEntity.size() == 0) logger.warn("Your package-entity is empty.You will can't operate any ZEntityManager interfaces.Please check your global.json config");
-        allEntity.removeAll(hookEntities);
+        List<Class<?>> allClasses = getClassesForPackage(classLoader, classesPackage);
+        if (allClasses.size() == 0) logger.warn("Your packageClasses is empty.You will can't operate any LASClassesManager interfaces.Please check your global.json config");
+        allClasses.removeAll(hookClasses);
         //建立空的entityManager
-        for (Class<?> entityClazz : allEntity) {
-          LASClassManager entityManager = new LASClassManagerImpl(globalConfig.getApplicationID(), globalConfig.getApplicationKey(), null, entityClazz, restAddr);
-          LASClassManagerFactory.putManager(entityClazz, entityManager);
-          logger.info("cache entity to factory:" + entityClazz.getSimpleName());
+        for (Class<?> classes : allClasses) {
+          LASClassManager classesManager = new LASClassManagerImpl(globalConfig.getApplicationID(), globalConfig.getApplicationKey(), null, classes, restAddr);
+          LASClassManagerFactory.putManager(classes, classesManager);
+          logger.info("cache entity to factory:" + classes.getSimpleName());
         }
       } catch (ClassNotFoundException e) {
         e.printStackTrace();
@@ -106,7 +106,7 @@ class BootstrapCloudCode {
 
   private void loadHookAndManager(String hookPackage) throws Exception {
     URL packageRoot = Thread.currentThread().getContextClassLoader().getResource(hookPackage.replace(".", "/"));
-    if (packageRoot == null) throw new LASException("your package-hook is invalid.Please check your global.json config");
+    if (packageRoot == null) throw new LASException("your packageHook is invalid.Please check your global.json config");
     File[] files = new File(packageRoot.getFile()).listFiles(new FilenameFilter() {
       public boolean accept(File dir, String name) {
         return name.endsWith(".class");
@@ -141,12 +141,12 @@ class BootstrapCloudCode {
       }
       LASClassManagerHookBase hook = (LASClassManagerHookBase) hookClazz.newInstance();
       Type[] types = ((ParameterizedType) hookClazz.getGenericSuperclass()).getActualTypeArguments();
-      Class entityClazz = (Class) types[0];
-      LASClassManager entityManager = new LASClassManagerImpl(globalConfig.getApplicationID(), globalConfig.getApplicationKey(), hook, entityClazz, restAddr);
-      entityManagerHandlerMap.put(managerName, new LASClassManagerHandler(entityManager, hook, entityClazz));
-      LASClassManagerFactory.putManager(entityClazz, entityManager);
-      logger.info("cache entity to factory:" + entityClazz.getSimpleName());
-      hookEntities.add(entityClazz);
+      Class classesClazz = (Class) types[0];
+      LASClassManager classesManager = new LASClassManagerImpl(globalConfig.getApplicationID(), globalConfig.getApplicationKey(), hook, classesClazz, restAddr);
+      classesManagerHandlerMap.put(managerName, new LASClassManagerHandler(classesManager, hook, classesClazz));
+      LASClassManagerFactory.putManager(classesClazz, classesManager);
+      logger.info("cache classes to factory:" + classesClazz.getSimpleName());
+      hookClasses.add(classesClazz);
     } catch (Exception ex) {
       ex.printStackTrace();
     }
