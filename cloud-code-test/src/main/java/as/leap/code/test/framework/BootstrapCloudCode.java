@@ -100,7 +100,7 @@ class BootstrapCloudCode {
         System.err.println(e.getMessage());
       }
     } else {
-      logger.warn("Your package-entity is empty.You will can't operate any ZEntityManager interfaces.");
+      logger.warn("Your packageClasses is empty.You will can't operate any LASClassesManager interfaces.");
     }
   }
 
