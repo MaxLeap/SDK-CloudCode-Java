@@ -15,4 +15,7 @@ public interface Response<T> {
   String getError();
 
   boolean succeeded();
+
+  void putHeader(String name,String value);
+
 }

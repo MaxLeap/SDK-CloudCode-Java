@@ -4,7 +4,9 @@ import as.leap.code.Response;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by stream.
@@ -16,6 +18,7 @@ public class LASResponse<T> implements Response<T> {
   private T result;
   private JavaType resultType;
   private String errorMessage;
+  private Map<String,String> headers = new HashMap<String, String>();
 
   public LASResponse(Class<T> resultClass) {
     this(resultClass, false);
@@ -58,5 +61,14 @@ public class LASResponse<T> implements Response<T> {
   @Override
   public boolean succeeded() {
     return errorMessage == null;
+  }
+
+  public Map<String, String> getHeaders() {
+    return headers;
+  }
+
+  @Override
+  public void putHeader(String key,String value){
+    this.headers.put(key,value);
   }
 }
