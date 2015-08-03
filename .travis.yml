@@ -9,5 +9,5 @@ branches:
   - develop
 
 notifications:
-  webhooks: https://hook.bearychat.com/=bw63g/travis/7c386582687b61b7e86b12d59b2655b2
+  webhooks: https://hook.bearychat.com/=bw63g/travis/8ce765c0d875adff1ac7268751dfe9b9
 
