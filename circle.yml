@@ -1,3 +1,7 @@
+general:
+  branches:
+    only:
+      - develop
 machine:
   java:
     version: openjdk6
