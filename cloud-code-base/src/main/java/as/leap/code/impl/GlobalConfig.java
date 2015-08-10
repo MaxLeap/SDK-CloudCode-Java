@@ -23,7 +23,6 @@ public class GlobalConfig {
 
   public GlobalConfig(String jsonStr) {
     this(LASJsonParser.asJsonNode(jsonStr));
-    this.configJsonStr = jsonStr;
   }
 
   public GlobalConfig(JsonNode jsonNode) {
