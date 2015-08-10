@@ -56,7 +56,7 @@ class BootstrapCloudCode {
     try {
       StringBuilder globalBuilder = new StringBuilder();
       String line;
-      while ((line = reader.readLine()) != null) globalBuilder.append(line);
+      while ((line = reader.readLine()) != null) globalBuilder.append(line).append("\n");
       jsonNode = LASJsonParser.asJsonNode(globalBuilder.toString());
     } catch (LASException e) {
       throw new LASException("Your global.json config is not match json format.Please check your config. Caused by "+ e.getMessage());

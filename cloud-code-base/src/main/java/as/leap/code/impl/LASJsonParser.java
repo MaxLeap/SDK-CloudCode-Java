@@ -1,5 +1,6 @@
 package as.leap.code.impl;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -17,6 +18,10 @@ public abstract class LASJsonParser {
 
   private static final ObjectMapper mapper = new ObjectMapper();
   private static final TypeFactory typeFactory = TypeFactory.defaultInstance();
+
+  static {
+    mapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
+  }
 
   public static <T> T asObject(String source, Class<T> clazz) {
     try {
