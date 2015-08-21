@@ -198,9 +198,10 @@ abstract class WebUtils {
 //    conn.setRequestProperty("Accept", "text/xml,text/javascript");
 //    conn.setRequestProperty("User-Agent", "iLegendSoft-Test-Client");
     conn.setRequestProperty("Content-Type", "application/json");
-    for (Entry<String, String> entry : header.entrySet()) {
-      conn.setRequestProperty(entry.getKey(), entry.getValue());
-    }
+    if (header != null && header.size() > 0)
+      for (Entry<String, String> entry : header.entrySet()) {
+        conn.setRequestProperty(entry.getKey(), entry.getValue());
+      }
     return conn;
   }
 
