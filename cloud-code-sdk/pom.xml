@@ -30,6 +30,7 @@
             <exclude>**/ReceiptRegularEntityOperatorTest.java</exclude>
             <exclude>**/WalletEntityOperatorTest.java</exclude>
             <exclude>**/ThemisTest.java</exclude>
+            <exclude>**/PushMsgTest.java</exclude>
           </excludes>
           <forkCount>1</forkCount>
           <reuseForks>true</reuseForks>

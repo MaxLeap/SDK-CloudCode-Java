@@ -1,8 +1,5 @@
 package as.leap.code.themis;
 
-import as.leap.code.themis.classes.CounterEntity;
-import as.leap.code.themis.classes.LockEntity;
-
 /**
  * User：poplar
  * Date：15/8/19
@@ -11,24 +8,23 @@ public interface Themis {
   /**
    * 获取一个count
    *
-   * @param counterEntity counterName
-   * @return Count
+   * @param name counterName
    */
-  CounterEntity generateCounter(CounterEntity counterEntity);
+  void generateCounter(String name);
 
   /**
    * 获取值
    *
    * @return long
    */
-  Long get(CounterEntity counterEntity);
+  Long get(String name);
 
   /**
    * 增加并获取值
    *
    * @return long
    */
-  Long incrementAndGet(CounterEntity counterEntity);
+  Long incrementAndGet(String name);
 
 
   /**
@@ -36,7 +32,7 @@ public interface Themis {
    *
    * @return long
    */
-  Long getAndIncrement(CounterEntity counterEntity);
+  Long getAndIncrement(String name);
 
 
   /**
@@ -44,7 +40,7 @@ public interface Themis {
    *
    * @return long
    */
-  Long decrementAndGet(CounterEntity counterEntity);
+  Long decrementAndGet(String name);
 
 
   /**
@@ -53,10 +49,10 @@ public interface Themis {
    * @param value long
    * @return long
    */
-  Long addAndGet(CounterEntity counterEntity, long value);
+  Long addAndGet(String name, long value);
 
 
-  Long getAndAdd(CounterEntity counterEntity, long value);
+  Long getAndAdd(String name, long value);
 
   /**
    * CAS 一个值
@@ -65,7 +61,7 @@ public interface Themis {
    * @param value    新的值
    * @return boolean
    */
-  Boolean compareAndSet(CounterEntity counterEntity, long expected, long value);
+  Boolean compareAndSet(String name, long expected, long value);
 
 
   //---------------------------------------------------------------------------------
@@ -73,17 +69,17 @@ public interface Themis {
   /**
    * 获取一个Lock
    *
-   * @param lockEntity lock
+   * @param name lockName
    * @return Lock
    */
-  LockEntity getLock(LockEntity lockEntity);
+  void getLock(String name);
 
   /**
    * 释放指定的锁
    *
-   * @param lockEntity lock
+   * @param name lockName
    * @return void
    */
-  void lockRelease(LockEntity lockEntity);
+  void lockRelease(String name);
 
 }

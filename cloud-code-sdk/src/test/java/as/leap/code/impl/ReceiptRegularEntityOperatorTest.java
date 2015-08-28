@@ -1,5 +1,6 @@
 package as.leap.code.impl;
 
+import as.leap.code.CloudCodeContants;
 import as.leap.code.assist.classes.ReceiptRegular;
 import as.leap.las.sdk.*;
 import org.junit.Assert;
@@ -16,7 +17,7 @@ public class ReceiptRegularEntityOperatorTest {
 
   @Before
   public void before() {
-    ReceiptRegularLASClassManager.DEFAULT_API_ADDRESS_PREFIX = "http://apiuat.zcloud.io/2.0";
+    CloudCodeContants.init();
   }
 
   @Test

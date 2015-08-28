@@ -1,8 +1,7 @@
 package as.leap.code.impl;
 
+import as.leap.code.CloudCodeContants;
 import as.leap.code.themis.Themis;
-import as.leap.code.themis.classes.CounterEntity;
-import as.leap.code.themis.classes.LockEntity;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,22 +12,19 @@ import org.junit.Test;
  */
 public class ThemisTest {
   private Themis themis;
-  private CounterEntity counterEntity;
-  private LockEntity lockEntity;
-  private String appId = "53d21c66e4b04663ccc7fbfd";
-  private String version = "0.0.1";
+  private String counterEntity = "myCounter";
+  private String lockEntity = "myLock";
+
   @Before
   public void before(){
-    ThemisImpl.DEFAULT_API_ADDRESS_PREFIX = "http://10.10.10.193:6060";
+    CloudCodeContants.init();
+    CloudCodeContants.DEFAULT_API_ADDRESS_PREFIX = "http://10.10.10.193:8080";
     themis = new ThemisImpl();
-    counterEntity = new CounterEntity(appId,version,"myCount");
-    lockEntity = new LockEntity(appId,version,"myLock");
   }
 
   @Test
   public void count(){
-    CounterEntity counter = themis.generateCounter(counterEntity);
-    System.out.println(counter);
+    themis.generateCounter(counterEntity);
     Long count = themis.get(counterEntity);
     System.out.println("get="+count);
     Long count1 = themis.incrementAndGet(counterEntity);
@@ -65,8 +61,7 @@ public class ThemisTest {
 
   @Test
   public void lock(){
-    LockEntity lock = themis.getLock(lockEntity);
-    System.out.println(lock);
+    themis.getLock(lockEntity);
     themis.lockRelease(lockEntity);
   }
 }

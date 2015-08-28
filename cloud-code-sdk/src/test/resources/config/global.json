@@ -1,7 +1,7 @@
 {
     "applicationName" : "helloword",
-    "applicationId": "55598fd560b2f98aa901b619",
-    "applicationKey": "dWhNN2V0eVlYNTdBSDF2elJKUHhpUQ",
+    "applicationId": "53d21c66e4b04663ccc7fbfd",
+    "applicationKey": "U9IcZuSwUyVWTgCjEA",
     "lang" : "java",
     "javaMain": "Main",
     "packageHook" : "hook",

@@ -1,5 +1,6 @@
 package as.leap.code.impl;
 
+import as.leap.code.CloudCodeContants;
 import as.leap.code.assist.AssistLASClassManager;
 import as.leap.code.assist.classes.Coin;
 import as.leap.las.sdk.*;
@@ -15,7 +16,7 @@ public class AssistLASClassManagerTest {
 
   @Before
   public void before() {
-    AssistLASClassManagerImpl.DEFAULT_API_ADDRESS_PREFIX = "http://apiuat.zcloud.io/2.0";
+    CloudCodeContants.init();
   }
 
   @Test

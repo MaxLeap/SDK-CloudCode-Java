@@ -17,31 +17,14 @@ import java.util.*;
 public class LASClassManagerImpl<T> implements LASClassManager<T> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(LASClassManagerImpl.class);
-  private String appId;
-  private String masterKey;
   private LASClassManagerHook<T> hook;
   private Class<T> entityClazz;
-  private String className;
   private String apiAddress;
 
-  private final static int DEFAULT_TIMEOUT = 5000;
-  private final static int DEFAULT_READ_TIMEOUT = 15000;
-  private final static String DEFAULT_API_ADDRESS_PREFIX = "http://apiuat.zcloud.io/2.0";
-  private final static String HEADER_ZCLOUD_APPID = "X-ZCloud-AppId";
-  private final static String HEADER_ZCLOUD_MASTERKEY = "X-ZCloud-MasterKey";
-  private final static String HEADER_ZCLOUD_REQUEST_FROM_CLOUDCODE = "X-ZCloud-Request-From-Cloudcode";
-
-  public LASClassManagerImpl(String appId, String masterKey, LASClassManagerHook<T> hook, Class<T> entityClazz) {
-    this(appId, masterKey, hook, entityClazz, null);
-  }
-
-  public LASClassManagerImpl(String appId, String masterKey, LASClassManagerHook<T> hook, Class<T> entityClazz, String restAddress) {
-    this.appId = appId;
-    this.masterKey = masterKey;
+  public LASClassManagerImpl(LASClassManagerHook<T> hook, Class<T> entityClazz) {
     this.hook = hook;
     this.entityClazz = entityClazz;
-    this.className = entityClazz.getSimpleName();
-    this.apiAddress = (restAddress == null ? DEFAULT_API_ADDRESS_PREFIX : restAddress) + "/classes/";
+    this.apiAddress = CloudCodeContants.DEFAULT_API_ADDRESS_PREFIX + "/classes/" + entityClazz.getSimpleName();
   }
 
   @Override
@@ -49,8 +32,8 @@ public class LASClassManagerImpl<T> implements LASClassManager<T> {
     try {
       BeforeResult<T> beforeResult = hook == null ? new BeforeResult<T>(object, true) : hook.beforeCreate(object);
       if (!beforeResult.isResult()) return new SaveResult<T>(beforeResult.getFailMessage());
-      String response = WebUtils.doPost(getAPIAddress(), getHeader(), LASJsonParser.asJson(object), DEFAULT_TIMEOUT, DEFAULT_READ_TIMEOUT);
-      LOGGER.info("get response of create[" + getAPIAddress() + "]:" + response);
+      String response = WebUtils.doPost(apiAddress, CloudCodeContants.HEADERS, LASJsonParser.asJson(object), CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
+      LOGGER.info("get response of create[" + apiAddress + "]:" + response);
       SaveMsg saveMsg = LASJsonParser.asObject(response, SaveMsg.class);
       SaveResult saveResult = new SaveResult<T>(beforeResult, saveMsg);
       if (hook == null) return saveResult;
@@ -58,7 +41,6 @@ public class LASClassManagerImpl<T> implements LASClassManager<T> {
       if (!afterResult.isSuccess()) saveResult.setFailMessage(afterResult.getFailMessage());
       return saveResult;
     } catch (Exception e) {
-      e.printStackTrace();
       throw new LASException(e);
     }
   }
@@ -72,8 +54,8 @@ public class LASClassManagerImpl<T> implements LASClassManager<T> {
   public FindMsg<T> find(LASQuery query, boolean count) throws LASException {
     try {
       String postQuery = serializeLasQueryForPostQuest(query);
-      String response = WebUtils.doPost(getAPIAddress() + "/query", getHeader(), postQuery, DEFAULT_TIMEOUT, DEFAULT_READ_TIMEOUT);
-      LOGGER.info("get response of find[" + getAPIAddress() + "/query](" + postQuery + "):" + response);
+      String response = WebUtils.doPost(apiAddress + "/query", CloudCodeContants.HEADERS, postQuery, CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
+      LOGGER.info("get response of find[" + apiAddress + "/query](" + postQuery + "):" + response);
       JsonNode responseJson = LASJsonParser.asJsonNode(response);
       ArrayNode results = (ArrayNode) responseJson.get("results");
       List<T> r = new ArrayList<T>();
@@ -83,7 +65,6 @@ public class LASClassManagerImpl<T> implements LASClassManager<T> {
       }
       return new FindMsg<T>(count ? results.size() : 0, r);
     } catch (Exception e) {
-      e.printStackTrace();
       throw new LASException(e);
     }
   }
@@ -91,12 +72,11 @@ public class LASClassManagerImpl<T> implements LASClassManager<T> {
   @Override
   public T findById(String id) throws LASException {
     try {
-      String response = WebUtils.doGet(getAPIAddress() + "/" + id, getHeader(), null);
-      LOGGER.info("get response of findById[" + getAPIAddress() + "/" + id + "]:" + response);
+      String response = WebUtils.doGet(apiAddress + "/" + id, CloudCodeContants.HEADERS, null);
+      LOGGER.info("get response of findById[" + apiAddress + "/" + id + "]:" + response);
       if ("{}".equals(response)) return null;
       return LASJsonParser.asObject(response, entityClazz);
     } catch (IOException e) {
-      e.printStackTrace();
       throw new LASException(e);
     }
   }
@@ -104,13 +84,12 @@ public class LASClassManagerImpl<T> implements LASClassManager<T> {
   @Override
   public UpdateMsg update(String id, LASUpdate update) throws LASException {
     try {
-      String response = WebUtils.doPut(getAPIAddress() + "/" + id, getHeader(), LASJsonParser.asJson(update.update()), DEFAULT_TIMEOUT, DEFAULT_READ_TIMEOUT);
-      LOGGER.info("get response of update[" + getAPIAddress() + "/" + id + "](" + update.update() + "):" + response);
+      String response = WebUtils.doPut(apiAddress + "/" + id, CloudCodeContants.HEADERS, LASJsonParser.asJson(update.update()), CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
+      LOGGER.info("get response of update[" + apiAddress + "/" + id + "](" + update.update() + "):" + response);
       UpdateMsg updateMsg = LASJsonParser.asObject(response, UpdateMsg.class);
       if (hook != null) hook.afterUpdate(id, updateMsg);
       return updateMsg;
     } catch (IOException e) {
-      e.printStackTrace();
       throw new LASException(e);
     }
   }
@@ -120,8 +99,8 @@ public class LASClassManagerImpl<T> implements LASClassManager<T> {
     BeforeResult<String> beforeResult = hook == null ? new BeforeResult<String>(id, true) : hook.beforeDelete(id);
     if (!beforeResult.isResult()) return new DeleteResult(beforeResult.getFailMessage());
     try {
-      String response = WebUtils.doDelete(getAPIAddress() + "/" + id, getHeader(), null);
-      LOGGER.info("get response of delete[" + getAPIAddress() + "/" + id + "]:" + response);
+      String response = WebUtils.doDelete(apiAddress + "/" + id, CloudCodeContants.HEADERS, null);
+      LOGGER.info("get response of delete[" + apiAddress + "/" + id + "]:" + response);
       DeleteMsg deleteMsg = LASJsonParser.asObject(response, DeleteMsg.class);
       DeleteResult deleteResult = new DeleteResult(beforeResult, deleteMsg);
       if (hook == null) return deleteResult;
@@ -129,7 +108,6 @@ public class LASClassManagerImpl<T> implements LASClassManager<T> {
       if (!afterResult.isSuccess()) deleteResult.setFailMessage(afterResult.getFailMessage());
       return deleteResult;
     } catch (Exception e) {
-      e.printStackTrace();
       throw new LASException(e);
     }
   }
@@ -144,11 +122,10 @@ public class LASClassManagerImpl<T> implements LASClassManager<T> {
       for (String id : ids) arrays.add(id);
       ObjectNode params = JsonNodeFactory.instance.objectNode();
       params.put("objectIds", arrays);
-      String response = WebUtils.doPost(getAPIAddress() + "/delete", getHeader(), params.toString(), DEFAULT_TIMEOUT, DEFAULT_READ_TIMEOUT);
-      LOGGER.info("get response of deleteBatch[" + getAPIAddress() + "/delete](" + ids + "):" + response);
+      String response = WebUtils.doPost(apiAddress + "/delete", CloudCodeContants.HEADERS, params.toString(), CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
+      LOGGER.info("get response of deleteBatch[" + apiAddress + "/delete](" + ids + "):" + response);
       return new DeleteResult<String[]>(beforeResult, LASJsonParser.asObject(response, DeleteMsg.class));
     } catch (Exception e) {
-      e.printStackTrace();
       throw new LASException(e);
     }
   }
@@ -163,18 +140,6 @@ public class LASClassManagerImpl<T> implements LASClassManager<T> {
     map.put("skip", lasQuery.skip());
 //    map.put("excludeKeys", null); Unsupported.
     return LASJsonParser.asJson(map);
-  }
-
-  private String getAPIAddress() {
-    return apiAddress + className;
-  }
-
-  private Map<String, String> getHeader() {
-    Map<String, String> headers = new HashMap<String, String>();
-    headers.put(HEADER_ZCLOUD_APPID, appId);
-    headers.put(HEADER_ZCLOUD_MASTERKEY, masterKey);
-    headers.put(HEADER_ZCLOUD_REQUEST_FROM_CLOUDCODE, "true");
-    return headers;
   }
 
 }

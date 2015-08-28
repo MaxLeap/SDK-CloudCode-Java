@@ -2,8 +2,6 @@ package as.leap.code.test.framework;
 
 import as.leap.code.*;
 import as.leap.code.impl.*;
-import as.leap.code.impl.LASJsonParser;
-import com.fasterxml.jackson.databind.JsonNode;
 import sun.net.www.protocol.file.FileURLConnection;
 
 import java.io.*;
@@ -36,34 +34,16 @@ class BootstrapCloudCode {
   }
 
   public void start() throws Exception {
-    globalConfig = loadConfig();
+    CloudCodeContants.init();
+    if (restAddr != null)
+      CloudCodeContants.DEFAULT_API_ADDRESS_PREFIX = this.restAddr;
+    globalConfig = CloudCodeContants.GLOBAL_CONFIG;
     hookClasses = new HashSet<Class>();
-    if (globalConfig.getPackageHook() != null && !isBlank(globalConfig.getPackageHook())) {
-      //load hook and manager
-      loadHookAndManager(globalConfig.getPackageHook());
-    }
-    cacheClasses(globalConfig);
-    AssistLASClassManagerImpl.DEFAULT_API_ADDRESS_PREFIX = this.restAddr;
-    loadMain(globalConfig.getCodeMain());
-  }
-
-  private GlobalConfig loadConfig() {
-    JsonNode jsonNode = null;
     this.classLoader = Thread.currentThread().getContextClassLoader();
-    InputStream inputStream = classLoader.getResourceAsStream("config/global.json");
-    if (inputStream == null) throw new LASException("you must have a global.json config file for your cloud code.");
-    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-    try {
-      StringBuilder globalBuilder = new StringBuilder();
-      String line;
-      while ((line = reader.readLine()) != null) globalBuilder.append(line).append("\n");
-      jsonNode = LASJsonParser.asJsonNode(globalBuilder.toString());
-    } catch (LASException e) {
-      throw new LASException("Your global.json config is not match json format.Please check your config. Caused by "+ e.getMessage());
-    } catch (IOException e) {
-      throw new LASException(e);
-    }
-    return new GlobalConfig(jsonNode);
+    //load hook and manager
+    loadHookAndManager();
+    cacheClasses();
+    loadMain(globalConfig.getCodeMain());
   }
 
   public LASClassManagerHandler getClassesManagerHandler(String managerName) {
@@ -81,31 +61,37 @@ class BootstrapCloudCode {
     loader.main(globalConfig);
   }
 
-  private void cacheClasses(GlobalConfig globalConfig) {
+  private void cacheClasses() {
     //处理不存在hook的entity
     String classesPackage = globalConfig.getPackageClasses();
-    if (classesPackage != null && !classesPackage.trim().equals("")) {
-      try {
-        List<Class<?>> allClasses = getClassesForPackage(classLoader, classesPackage);
-        if (allClasses.size() == 0) logger.warn("Your packageClasses is empty.You will can't operate any LASClassesManager interfaces.Please check your global.json config");
-        allClasses.removeAll(hookClasses);
-        //建立空的entityManager
-        for (Class<?> classes : allClasses) {
-          LASClassManager classesManager = new LASClassManagerImpl(globalConfig.getApplicationID(), globalConfig.getApplicationKey(), null, classes, restAddr);
-          LASClassManagerFactory.putManager(classes, classesManager);
-          logger.info("cache entity to factory:" + classes.getSimpleName());
-        }
-      } catch (ClassNotFoundException e) {
-        e.printStackTrace();
-        System.err.println(e.getMessage());
-      }
-    } else {
+    if (isBlank(classesPackage)) {
       logger.warn("Your packageClasses is empty.You will can't operate any LASClassesManager interfaces.");
+      return;
+    }
+    try {
+      List<Class<?>> allClasses = getClassesForPackage(classLoader, classesPackage);
+      if (allClasses.size() == 0) {
+        logger.warn("Your packageClasses is empty.You will can't operate any LASClassesManager interfaces.Please check your global.json config");
+        return;
+      }
+      allClasses.removeAll(hookClasses);
+      //建立空的entityManager
+      for (Class<?> classes : allClasses) {
+        LASClassManager classesManager = new LASClassManagerImpl(null, classes);
+        LASClassManagerFactory.putManager(classes, classesManager);
+        logger.info("cache entity to factory:" + classes.getSimpleName());
+      }
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+      System.err.println(e.getMessage());
     }
   }
 
-  private void loadHookAndManager(String hookPackage) throws Exception {
-    URL packageRoot = Thread.currentThread().getContextClassLoader().getResource(hookPackage.replace(".", "/"));
+  private void loadHookAndManager() throws Exception {
+    String hookPackage = globalConfig.getPackageHook();
+    if (isBlank(hookPackage)) return;
+
+    URL packageRoot = classLoader.getResource(hookPackage.replace(".", "/"));
     if (packageRoot == null) throw new LASException("your packageHook is invalid.Please check your global.json config");
     File[] files = new File(packageRoot.getFile()).listFiles(new FilenameFilter() {
       public boolean accept(File dir, String name) {
@@ -122,7 +108,7 @@ class BootstrapCloudCode {
 
   private void parseClass(String hookPackage, String clazzName) {
     try {
-      Class hookClazz = Thread.currentThread().getContextClassLoader().loadClass(hookPackage + "." + clazzName);
+      Class hookClazz = classLoader.loadClass(hookPackage + "." + clazzName);
       ClassManager classManagerAnnotation = (ClassManager) hookClazz.getAnnotation(ClassManager.class);
       if (classManagerAnnotation == null) return;
       String managerName = classManagerAnnotation.value();
@@ -142,10 +128,10 @@ class BootstrapCloudCode {
       LASClassManagerHookBase hook = (LASClassManagerHookBase) hookClazz.newInstance();
       Type[] types = ((ParameterizedType) hookClazz.getGenericSuperclass()).getActualTypeArguments();
       Class classesClazz = (Class) types[0];
-      LASClassManager classesManager = new LASClassManagerImpl(globalConfig.getApplicationID(), globalConfig.getApplicationKey(), hook, classesClazz, restAddr);
+      LASClassManager classesManager = new LASClassManagerImpl(hook, classesClazz);
       classesManagerHandlerMap.put(managerName, new LASClassManagerHandler(classesManager, hook, classesClazz));
       LASClassManagerFactory.putManager(classesClazz, classesManager);
-      logger.info("cache classes to factory:" + classesClazz.getSimpleName());
+      logger.info("cache hook classes to factory:" + classesClazz.getSimpleName());
       hookClasses.add(classesClazz);
     } catch (Exception ex) {
       ex.printStackTrace();

@@ -1,5 +1,6 @@
 package as.leap.code.impl;
 
+import as.leap.code.CloudCodeContants;
 import as.leap.code.DeleteResult;
 import as.leap.code.SaveResult;
 import as.leap.code.LASClassManagerHook;
@@ -19,14 +20,13 @@ import java.util.UUID;
 public class LASClassManagerTest {
 
   private LASClassManagerImpl<Song> entityManager;
-  private String appId = "53d21c66e4b04663ccc7fbfd";
-  private String masterKey = "U9IcZuSwUyVWTgCjEA";
   private LASClassManagerHook<Song> hook;
 
   @Before
   public void setup() {
+    CloudCodeContants.init();
     hook = new MyHookLAS();
-    entityManager = new LASClassManagerImpl<Song>(appId, masterKey, hook, Song.class);
+    entityManager = new LASClassManagerImpl<Song>(hook, Song.class);
   }
 
   @Test

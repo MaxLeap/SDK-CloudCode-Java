@@ -1,5 +1,6 @@
 package as.leap.code.impl;
 
+import as.leap.code.CloudCodeContants;
 import as.leap.code.assist.classes.Wallet;
 import as.leap.las.sdk.*;
 import org.junit.Assert;
@@ -16,7 +17,7 @@ public class WalletEntityOperatorTest {
 
   @Before
   public void before() {
-    WalletLASClassManager.DEFAULT_API_ADDRESS_PREFIX = "http://apiuat.zcloud.io/2.0";
+    CloudCodeContants.init();
   }
 
   @Test

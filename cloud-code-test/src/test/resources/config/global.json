@@ -1,10 +1,10 @@
 {
-    "applicationName" : "JustPlay",
+    "applicationName" : "JustPlay",//应用名称
     "applicationId": "28ferwlg9sncja6qw9ede6ruomjfed7lex4dljhlg80u23xl",
     "applicationKey": "xj25ocmxj8cahecic82bfy9e79rctmf663jfn8ixh86eisl5",
     "lang" : "java",
     "javaMain": "myApp.Main",
-    "package-hook": "myApp.hook",
-    "package-entity": "myApp.entity",
+    "packageHook": "myApp.hook",
+    "packageClasses": "myApp.entity",
     "version":"0.1.0"
 }

@@ -13,7 +13,7 @@ import org.junit.Test;
 public class FrameworkTest extends TestCloudCode {
 
   public FrameworkTest() throws Exception {
-    super("http://apiuat.zcloud.io/2.0");
+    super("http://10.10.10.193:8080");
   }
 
   @Test

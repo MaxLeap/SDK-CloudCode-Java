@@ -1,9 +1,13 @@
 package as.leap.code.impl;
 
+import as.leap.code.CloudCodeContants;
 import as.leap.code.LASException;
+import as.leap.code.Logger;
+import as.leap.code.LoggerFactory;
 import as.leap.code.themis.Themis;
-import as.leap.code.themis.classes.CounterEntity;
-import as.leap.code.themis.classes.LockEntity;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User：poplar
@@ -11,31 +15,46 @@ import as.leap.code.themis.classes.LockEntity;
  */
 public class ThemisImpl implements Themis {
 
-  private String apiAddress;
-  final static int DEFAULT_TIMEOUT = 5000;
-  final static int DEFAULT_READ_TIMEOUT = 15000;
+  private static final Logger LOGGER = LoggerFactory.getLogger(ThemisImpl.class);
 
-  public static String DEFAULT_API_ADDRESS_PREFIX = "http://apiuat.zcloud.io/2.0";
+  private String version;
+  private String countAddress;
+  private String lockAddress;
+  private Map<String,String> headers = new HashMap<String, String>();
 
   public ThemisImpl() {
-    this.apiAddress = DEFAULT_API_ADDRESS_PREFIX;
+    this.version = CloudCodeContants.GLOBAL_CONFIG.getVersion();
+    this.countAddress = CloudCodeContants.DEFAULT_API_ADDRESS_PREFIX + "/themis/count/";
+    this.lockAddress = CloudCodeContants.DEFAULT_API_ADDRESS_PREFIX + "/themis/lock/";
+    headers.put(CloudCodeContants.HEADER_ZCLOUD_APPID, CloudCodeContants.GLOBAL_CONFIG.getApplicationID());
+    headers.put(CloudCodeContants.HEADER_ZCLOUD_MASTERKEY, CloudCodeContants.GLOBAL_CONFIG.getApplicationKey());
+  }
+
+  private String getFullCountAddress(String operator,String name){
+    if (operator == null)
+      return countAddress + version + "/" + name;
+    return countAddress + operator + "/" + version + "/" + name;
+  }
+
+  private String getFullLockAddress(String name){
+    return lockAddress + version + "/" + name;
   }
 
   @Override
-  public CounterEntity generateCounter(CounterEntity counterEntity) {
+  public void generateCounter(String name) {
     try {
-      String response = WebUtils.doPost(apiAddress + "/count",null,LASJsonParser.asJson(counterEntity),DEFAULT_TIMEOUT,DEFAULT_READ_TIMEOUT);
-      return LASJsonParser.asObject(response,CounterEntity.class);
+      String response = WebUtils.doPost(getFullCountAddress(null,name),headers,null, CloudCodeContants.DEFAULT_TIMEOUT,CloudCodeContants.DEFAULT_READ_TIMEOUT);
+      LOGGER.info("get response of generateCounter[" + getFullCountAddress(null,name) + "]:" + response);
     } catch (Exception e) {
       throw new LASException(e);
     }
   }
 
   @Override
-  public Long get(CounterEntity counterEntity) {
-    String url = apiAddress + "/count/" + counterEntity.getAppId() + "/" + counterEntity.getVersion() + "/" + counterEntity.getName();
+  public Long get(String name) {
     try {
-      String response = WebUtils.doGet(url,null,null);
+      String response = WebUtils.doGet(getFullCountAddress(null,name),headers,null);
+      LOGGER.info("get response of get[" + getFullCountAddress(null,name) + "]:" + response);
       return Long.parseLong(response);
     } catch (Exception e) {
       throw new LASException(e);
@@ -43,9 +62,10 @@ public class ThemisImpl implements Themis {
   }
 
   @Override
-  public Long incrementAndGet(CounterEntity counterEntity) {
+  public Long incrementAndGet(String name) {
     try {
-      String response = WebUtils.doPut(apiAddress + "/count/incrementAndGet",null,LASJsonParser.asJson(counterEntity),DEFAULT_TIMEOUT,DEFAULT_READ_TIMEOUT);
+      String response = WebUtils.doPut(getFullCountAddress("incrementAndGet",name),headers,"",CloudCodeContants.DEFAULT_TIMEOUT,CloudCodeContants.DEFAULT_READ_TIMEOUT);
+      LOGGER.info("get response of incrementAndGet[" + getFullCountAddress("incrementAndGet",name) + "]:" + response);
       return Long.parseLong(response);
     } catch (Exception e) {
       throw new LASException(e);
@@ -53,9 +73,10 @@ public class ThemisImpl implements Themis {
   }
 
   @Override
-  public Long getAndIncrement(CounterEntity counterEntity) {
+  public Long getAndIncrement(String name) {
     try {
-      String response = WebUtils.doPut(apiAddress + "/count/getAndIncrement",null,LASJsonParser.asJson(counterEntity),DEFAULT_TIMEOUT,DEFAULT_READ_TIMEOUT);
+      String response = WebUtils.doPut(getFullCountAddress("getAndIncrement",name),headers,"",CloudCodeContants.DEFAULT_TIMEOUT,CloudCodeContants.DEFAULT_READ_TIMEOUT);
+      LOGGER.info("get response of getAndIncrement[" + getFullCountAddress("getAndIncrement",name) + "]:" + response);
       return Long.parseLong(response);
     } catch (Exception e) {
       throw new LASException(e);
@@ -63,9 +84,10 @@ public class ThemisImpl implements Themis {
   }
 
   @Override
-  public Long decrementAndGet(CounterEntity counterEntity) {
+  public Long decrementAndGet(String name) {
     try {
-      String response = WebUtils.doPut(apiAddress + "/count/decrementAndGet",null,LASJsonParser.asJson(counterEntity),DEFAULT_TIMEOUT,DEFAULT_READ_TIMEOUT);
+      String response = WebUtils.doPut(getFullCountAddress("decrementAndGet",name),headers,"",CloudCodeContants.DEFAULT_TIMEOUT,CloudCodeContants.DEFAULT_READ_TIMEOUT);
+      LOGGER.info("get response of decrementAndGet[" + getFullCountAddress("decrementAndGet",name) + "]:" + response);
       return Long.parseLong(response);
     } catch (Exception e) {
       throw new LASException(e);
@@ -73,9 +95,10 @@ public class ThemisImpl implements Themis {
   }
 
   @Override
-  public Long addAndGet(CounterEntity counterEntity, long value) {
+  public Long addAndGet(String name, long value) {
     try {
-      String response = WebUtils.doPut(apiAddress + "/count/addAndGet/" + String.valueOf(value),null,LASJsonParser.asJson(counterEntity),DEFAULT_TIMEOUT,DEFAULT_READ_TIMEOUT);
+      String response = WebUtils.doPut(getFullCountAddress("addAndGet",name) + "/" + String.valueOf(value),headers,"",CloudCodeContants.DEFAULT_TIMEOUT,CloudCodeContants.DEFAULT_READ_TIMEOUT);
+      LOGGER.info("get response of addAndGet[" + getFullCountAddress("addAndGet",name) + "/" + String.valueOf(value) + "]:" + response);
       return Long.parseLong(response);
     } catch (Exception e) {
       throw new LASException(e);
@@ -83,9 +106,10 @@ public class ThemisImpl implements Themis {
   }
 
   @Override
-  public Long getAndAdd(CounterEntity counterEntity, long value) {
+  public Long getAndAdd(String name, long value) {
     try {
-      String response = WebUtils.doPut(apiAddress + "/count/getAndAdd/" + String.valueOf(value),null,LASJsonParser.asJson(counterEntity),DEFAULT_TIMEOUT,DEFAULT_READ_TIMEOUT);
+      String response = WebUtils.doPut(getFullCountAddress("getAndAdd",name) + "/" + String.valueOf(value),headers,"",CloudCodeContants.DEFAULT_TIMEOUT,CloudCodeContants.DEFAULT_READ_TIMEOUT);
+      LOGGER.info("get response of getAndAdd[" + getFullCountAddress("getAndAdd",name) + "/" + String.valueOf(value) + "]:" + response);
       return Long.parseLong(response);
     } catch (Exception e) {
       throw new LASException(e);
@@ -93,9 +117,10 @@ public class ThemisImpl implements Themis {
   }
 
   @Override
-  public Boolean compareAndSet(CounterEntity counterEntity, long expected, long value) {
+  public Boolean compareAndSet(String name, long expected, long value) {
     try {
-      String response = WebUtils.doPost(apiAddress + "/count/cas/" + String.valueOf(expected) + "/" + String.valueOf(value),null,LASJsonParser.asJson(counterEntity),DEFAULT_TIMEOUT,DEFAULT_READ_TIMEOUT);
+      String response = WebUtils.doPost(getFullCountAddress("getAndAdd",name) + "/" + String.valueOf(expected) + "/" + String.valueOf(value),headers,null,CloudCodeContants.DEFAULT_TIMEOUT,CloudCodeContants.DEFAULT_READ_TIMEOUT);
+      LOGGER.info("get response of compareAndSet[" + getFullCountAddress("compareAndSet",name) + "/" + String.valueOf(expected) + "/" + String.valueOf(value) + "]:" + response);
       return Boolean.parseBoolean(response);
     } catch (Exception e) {
       throw new LASException(e);
@@ -103,21 +128,20 @@ public class ThemisImpl implements Themis {
   }
 
   @Override
-  public LockEntity getLock(LockEntity lockEntity) {
-    String url = apiAddress + "/lock/" + lockEntity.getAppId() + "/" + lockEntity.getVersion() + "/" + lockEntity.getName();
+  public void getLock(String name) {
     try {
-      String response = WebUtils.doGet(url,null,null);
-      return LASJsonParser.asObject(response,LockEntity.class);
+      String response = WebUtils.doGet(getFullLockAddress(name),headers,null);
+      LOGGER.info("get response of getLock[" + getFullLockAddress(name) + "]:" + response);
     } catch (Exception e) {
       throw new LASException(e);
     }
   }
 
   @Override
-  public void lockRelease(LockEntity lockEntity) {
-    String url = apiAddress + "/lock/" + lockEntity.getAppId() + "/" + lockEntity.getVersion() + "/" + lockEntity.getName();
+  public void lockRelease(String name) {
     try {
-      WebUtils.doDelete(url,null,null);
+      String response = WebUtils.doDelete(getFullLockAddress(name),headers,null);
+      LOGGER.info("get response of getLock[" + getFullLockAddress(name) + "]:" + response);
     } catch (Exception e) {
       throw new LASException(e);
     }

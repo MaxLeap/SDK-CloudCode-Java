@@ -1,5 +1,6 @@
 package as.leap.code.impl;
 
+import as.leap.code.CloudCodeContants;
 import as.leap.code.Logger;
 import as.leap.code.LoggerFactory;
 import as.leap.code.assist.classes.ReceiptRegular;
@@ -18,8 +19,8 @@ public class ReceiptRegularLASClassManager extends AssistLASClassManagerImpl<Rec
 
   public Map transaction(String id, Map receiptInfo) {
     try {
-      String response = WebUtils.doPost(getAPIAddress() + "/" + id + "/trans", getHeader(), LASJsonParser.asJson(receiptInfo), DEFAULT_TIMEOUT, DEFAULT_READ_TIMEOUT);
-      LOGGER.info("get response of transaction[" + getAPIAddress() + "]:" + response);
+      String response = WebUtils.doPost(apiAddress + "/" + id + "/trans", CloudCodeContants.HEADERS, LASJsonParser.asJson(receiptInfo), CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
+      LOGGER.info("get response of transaction[" + apiAddress + "/" + id + "/trans]:" + response);
       return LASJsonParser.asMap(response);
     } catch (Exception e) {
       throw new as.leap.code.LASException(e);
