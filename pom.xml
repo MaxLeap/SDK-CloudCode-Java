@@ -50,8 +50,6 @@
   </developers>
 
   <properties>
-    <nexus.develop.host>10.10.10.137:8081</nexus.develop.host>
-    <nexus.production.host>54.164.163.132:8081</nexus.production.host>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <las-sdk-data-api.version>3.0.1</las-sdk-data-api.version>
     <jackson.version>2.5.3</jackson.version>
@@ -66,94 +64,36 @@
     <tag>HEAD</tag>
   </scm>
 
-  <!--<profiles>-->
-    <!--<profile>-->
-      <!--<id>oss</id>-->
-      <!--<build>-->
-        <!--<plugins>-->
-          <!--<plugin>-->
-            <!--<groupId>org.apache.maven.plugins</groupId>-->
-            <!--<artifactId>maven-gpg-plugin</artifactId>-->
-            <!--<version>1.5</version>-->
-            <!--<executions>-->
-              <!--<execution>-->
-                <!--<phase>verify</phase>-->
-                <!--<goals>-->
-                  <!--<goal>sign</goal>-->
-                <!--</goals>-->
-              <!--</execution>-->
-            <!--</executions>-->
-          <!--</plugin>-->
-        <!--</plugins>-->
-      <!--</build>-->
-      <!--<distributionManagement>-->
-        <!--<snapshotRepository>-->
-          <!--<id>oss</id>-->
-          <!--<url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
-        <!--</snapshotRepository>-->
-        <!--<repository>-->
-          <!--<id>oss</id>-->
-          <!--<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>-->
-        <!--</repository>-->
-      <!--</distributionManagement>-->
-    <!--</profile>-->
-  <!--</profiles>-->
-
   <profiles>
     <profile>
-      <id>dev</id>
+      <id>oss</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.5</version>
+            <executions>
+              <execution>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
       <distributionManagement>
-        <repository>
-          <id>releases</id>
-          <name>Internal Releases</name>
-          <url>http://${nexus.develop.host}/nexus/content/repositories/releases</url>
-        </repository>
         <snapshotRepository>
-          <id>snapshots</id>
-          <name>Internal Releases</name>
-          <url>http://${nexus.develop.host}/nexus/content/repositories/snapshots</url>
+          <id>oss</id>
+          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
-      </distributionManagement>
-      <properties>
-        <url.leap>http://apidev.zcloud.io/2.0</url.leap>
-        <log.level>DEBUG</log.level>
-      </properties>
-    </profile>
-    <profile>
-      <id>pro</id>
-      <distributionManagement>
         <repository>
-          <id>releases</id>
-          <name>Internal Releases</name>
-          <url>http://${nexus.production.host}/content/repositories/releases</url>
+          <id>oss</id>
+          <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
-        <snapshotRepository>
-          <id>snapshots</id>
-          <name>Internal Releases</name>
-          <url>http://${nexus.production.host}/content/repositories/snapshots</url>
-        </snapshotRepository>
       </distributionManagement>
-      <properties>
-        <url.leap>http://api.leap.as/2.0</url.leap>
-        <log.level>INFO</log.level>
-      </properties>
-    </profile>
-    <profile>
-      <id>local</id>
-      <properties>
-        <url.leap>http://10.10.10.193:8080</url.leap>
-        <log.level>DEBUG</log.level>
-      </properties>
-    </profile>
-    <profile>
-      <id>uat</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <properties>
-        <url.leap>http://apiuat.zcloud.io/2.0</url.leap>
-        <log.level>INFO</log.level>
-      </properties>
     </profile>
   </profiles>
 
@@ -249,23 +189,23 @@
         </executions>
       </plugin>
 
-      <!--<plugin>-->
-        <!--<groupId>org.apache.maven.plugins</groupId>-->
-        <!--<artifactId>maven-javadoc-plugin</artifactId>-->
-        <!--<version>2.10.3</version>-->
-        <!--<configuration>-->
-          <!--<charset>${project.build.sourceEncoding}</charset>-->
-          <!--<encoding>${project.build.sourceEncoding}</encoding>-->
-        <!--</configuration>-->
-        <!--<executions>-->
-          <!--<execution>-->
-            <!--<id>attach-javadocs</id>-->
-            <!--<goals>-->
-              <!--<goal>jar</goal>-->
-            <!--</goals>-->
-          <!--</execution>-->
-        <!--</executions>-->
-      <!--</plugin>-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.10.3</version>
+        <configuration>
+          <charset>${project.build.sourceEncoding}</charset>
+          <encoding>${project.build.sourceEncoding}</encoding>
+        </configuration>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
