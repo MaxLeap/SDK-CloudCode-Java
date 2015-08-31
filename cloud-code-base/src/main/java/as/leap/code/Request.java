@@ -7,7 +7,10 @@ package as.leap.code;
 public interface Request {
 
   /**
-   * @return T
+   *
+   * @param clazz the class of want to convert
+   * @param <T> th class type of want to convert
+   * @return object of want to convert
    */
   <T> T parameter(Class<T> clazz);
 

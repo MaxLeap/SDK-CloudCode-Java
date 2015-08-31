@@ -47,7 +47,7 @@ public abstract class PushMsgBuilder {
        }
      }
    }
-   * @return
+   * @return PushMsgBuilder
    */
   protected PushMsgBuilder build() {
     ObjectNode result = JsonNodeFactory.instance.objectNode();

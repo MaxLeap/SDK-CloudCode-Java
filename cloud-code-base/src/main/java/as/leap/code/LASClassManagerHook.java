@@ -13,43 +13,49 @@ public interface LASClassManagerHook<T> {
   /**
    * hook before save
    *
-   * @param entity
-   * @return BeforeResult
+   * @param entity operator object
+   * @return BeforeResult result of before create entity
    */
   BeforeResult<T> beforeCreate(T entity);
 
   /**
    * hook after save
    *
-   * @param beforeResult hook result
+   * @param beforeResult result of before create entity
+   * @param saveMessage result of create entity
+   * @return AfterResult result of after create entity
    */
   AfterResult afterCreate(BeforeResult<T> beforeResult, SaveMsg saveMessage);
 
   /**
    * hook before delete
    *
-   * @param objectId
-   * @return BeforeResult
+   * @param objectId entity object id
+   * @return BeforeResult result of before delete entity
    */
   BeforeResult<String> beforeDelete(String objectId);
 
   /**
    * hook before delete
    *
-   * @param objectIds
-   * @return BeforeResult
+   * @param objectIds collection of entity objects id
+   * @return BeforeResult result of before delete some of entity object by id
    */
   BeforeResult<String[]> beforeDelete(String[] objectIds);
 
   /**
-   * @param beforeResult
+   * hook after delete
+   * @param beforeResult result of before delete entity
+   * @param deleteMessage result of delete entity
+   * @return result of after delete entity
    */
   AfterResult afterDelete(BeforeResult<String> beforeResult, DeleteMsg deleteMessage);
 
   /**
    * do something after completed update operation.
-   *
-   * @param objectId
+   * @param objectId object id of entity
+   * @param updateMessage result of update entity
+   * @return result of after delete entity
    */
   AfterResult afterUpdate(String objectId, UpdateMsg updateMessage);
 

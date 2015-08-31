@@ -19,6 +19,6 @@ public class PushMsgTest {
   @Test
   public void push(){
     PushMsg msg = new PushMsg();
-    msg.withDeviceToken("adbsdfsfd").build().push();
+    msg.withDeviceToken("adbsdfsfd").withMsg("hello").push();
   }
 }

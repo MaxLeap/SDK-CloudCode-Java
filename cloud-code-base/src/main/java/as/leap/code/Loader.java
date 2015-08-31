@@ -14,6 +14,7 @@ public interface Loader {
 
   /**
    * user have to implements this method for own code.
+   * @param globalConfig user's cloudcode config
    */
   void main(GlobalConfig globalConfig);
 

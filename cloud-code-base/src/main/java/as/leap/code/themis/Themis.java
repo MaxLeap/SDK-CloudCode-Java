@@ -14,14 +14,14 @@ public interface Themis {
 
   /**
    * 获取值
-   *
+   * @param name counterName
    * @return long
    */
   Long get(String name);
 
   /**
    * 增加并获取值
-   *
+   * @param name counterName
    * @return long
    */
   Long incrementAndGet(String name);
@@ -29,7 +29,7 @@ public interface Themis {
 
   /**
    * 先获取到值,然后原子增加
-   *
+   * @param name counterName
    * @return long
    */
   Long getAndIncrement(String name);
@@ -37,7 +37,7 @@ public interface Themis {
 
   /**
    * 递减并获取值
-   *
+   * @param name counterName
    * @return long
    */
   Long decrementAndGet(String name);
@@ -45,7 +45,7 @@ public interface Themis {
 
   /**
    * 增加指定的值并返回结果
-   *
+   * @param name counterName
    * @param value long
    * @return long
    */
@@ -56,7 +56,7 @@ public interface Themis {
 
   /**
    * CAS 一个值
-   *
+   * @param name counterName
    * @param expected 期待的值
    * @param value    新的值
    * @return boolean
@@ -68,9 +68,7 @@ public interface Themis {
 
   /**
    * 获取一个Lock
-   *
    * @param name lockName
-   * @return Lock
    */
   void getLock(String name);
 
@@ -78,7 +76,6 @@ public interface Themis {
    * 释放指定的锁
    *
    * @param name lockName
-   * @return void
    */
   void lockRelease(String name);
 
