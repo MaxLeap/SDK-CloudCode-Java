@@ -2,11 +2,8 @@ package as.leap.code.test.framework;
 
 import as.leap.code.*;
 import as.leap.code.data.access.DataAccessMethod;
-import as.leap.code.impl.JobRunner;
-import as.leap.code.impl.LASClassManagerHandler;
-import as.leap.code.impl.LASRequest;
+import as.leap.code.impl.*;
 import com.fasterxml.jackson.databind.JsonNode;
-import as.leap.code.impl.LASResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,8 +27,12 @@ public abstract class TestCloudCode {
     this.bootstrapCloudCode.start();
   }
 
-  protected Response runFunction(String name, String params) {
-    Request request = new LASRequest(params);
+  protected Response runFunction(String name, String params){
+    return this.runFunction(name,params,null);
+  }
+
+  protected Response runFunction(String name, String params, UserPrincipal userPrincipal) {
+    Request request = new LASRequest(params,userPrincipal);
     Response response = null;
     Definer definer = bootstrapCloudCode.getLoader().definers().get(RequestCategory.FUNCTION.alias());
     if (definer == null) {
@@ -59,9 +60,12 @@ public abstract class TestCloudCode {
     return response;
   }
 
-
   protected void runJob(String name, String params) {
-    Request request = new LASRequest(params);
+    this.runJob(name,params,null);
+  }
+
+  protected void runJob(String name, String params, UserPrincipal userPrincipal) {
+    Request request = new LASRequest(params,userPrincipal);
     Definer definer = bootstrapCloudCode.getLoader().definers().get(RequestCategory.JOB.alias());
     if (definer == null) {
       logger.error("doesn't exist job definer");
@@ -93,7 +97,7 @@ public abstract class TestCloudCode {
     requestParams.put("params", params);
     requestParams.put("method", method == DataAccessMethod.FINDBYID ? "findById" : method.name().toLowerCase());
 
-    Request request = new LASRequest(LASJsonParser.asJson(requestParams));
+    LASClassManagerRequest request = LASJsonParser.asObject(LASJsonParser.asJson(requestParams),LASClassManagerRequest.class);
     Response response = entityManagerHandler.handle(request);
     return response;
   }

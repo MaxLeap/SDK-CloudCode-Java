@@ -3,6 +3,7 @@ package as.leap.code.impl;
 import as.leap.code.CloudCodeContants;
 import as.leap.code.Logger;
 import as.leap.code.LoggerFactory;
+import as.leap.code.UserPrincipal;
 import as.leap.code.assist.classes.Wallet;
 import as.leap.las.sdk.UpdateMsg;
 
@@ -18,9 +19,9 @@ public class WalletLASClassManager extends AssistLASClassManagerImpl<Wallet> {
     super(walletClass);
   }
 
-  public UpdateMsg consume(Map params) {
+  public UpdateMsg consume(Map params,UserPrincipal userPrincipal) {
     try {
-      String response = WebUtils.doPost(apiAddress + "/consume", CloudCodeContants.HEADERS, LASJsonParser.asJson(params), CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
+      String response = WebUtils.doPost(apiAddress + "/consume", CloudCodeContants.getHeaders(userPrincipal), LASJsonParser.asJson(params), CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
       LOGGER.info("get response of consume[" + apiAddress + "/consume]:" + response);
       return LASJsonParser.asObject(response, UpdateMsg.class);
     } catch (Exception e) {
@@ -28,9 +29,9 @@ public class WalletLASClassManager extends AssistLASClassManagerImpl<Wallet> {
     }
   }
 
-  public Map transaction(String id, Map receiptInfo) {
+  public Map transaction(String id, Map receiptInfo,UserPrincipal userPrincipal) {
     try {
-      String response = WebUtils.doPost(apiAddress + "/" + id + "/trans", CloudCodeContants.HEADERS, LASJsonParser.asJson(receiptInfo), CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
+      String response = WebUtils.doPost(apiAddress + "/" + id + "/trans", CloudCodeContants.getHeaders(userPrincipal), LASJsonParser.asJson(receiptInfo), CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
       LOGGER.info("get response of transaction[" + apiAddress + "/" + id + "/trans]:" + response);
       return LASJsonParser.asMap(response);
     } catch (Exception e) {
@@ -38,13 +39,25 @@ public class WalletLASClassManager extends AssistLASClassManagerImpl<Wallet> {
     }
   }
 
-  public Wallet getWallet(Map params) {
+  public Wallet getWallet(Map params,UserPrincipal userPrincipal) {
     try {
-      String response = WebUtils.doPost(apiAddress + "/getWallet", CloudCodeContants.HEADERS, LASJsonParser.asJson(params), CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
+      String response = WebUtils.doPost(apiAddress + "/getWallet", CloudCodeContants.getHeaders(userPrincipal), LASJsonParser.asJson(params), CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
       LOGGER.info("get response of getWallet[" + apiAddress + "/getWallet]:" + response);
       return LASJsonParser.asObject(response, Wallet.class);
     } catch (Exception e) {
       throw new as.leap.code.LASException(e);
     }
+  }
+
+  public UpdateMsg consume(Map params) {
+    return this.consume(params,null);
+  }
+
+  public Map transaction(String id, Map receiptInfo) {
+    return this.transaction(id,receiptInfo,null);
+  }
+
+  public Wallet getWallet(Map params) {
+    return this.getWallet(params,null);
   }
 }

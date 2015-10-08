@@ -41,9 +41,9 @@ public abstract class PushMsgBuilder {
      "criteria":"{\"deviceToken\":\"APA91bFohTK3UAbjE-8K7R6KuPpmy7tA9fiD41jZFXL2TVzA6zSao2VIuOHfsDDrTB7DfHj7h4piA8w_rStUPvmlYgW4kQmVdgIIG4huZJiQOpgqXEirixz1S_AE18AbI6EMTUF4C2_4\"}",
      "creativeList": {
        "A": {
-         "data": {
-           "alert":"play poler",
-         }
+          "data": {
+            "alert":"play poler"
+          }
        }
      }
    }

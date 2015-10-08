@@ -129,7 +129,7 @@ class BootstrapCloudCode {
       Type[] types = ((ParameterizedType) hookClazz.getGenericSuperclass()).getActualTypeArguments();
       Class classesClazz = (Class) types[0];
       LASClassManager classesManager = new LASClassManagerImpl(hook, classesClazz);
-      classesManagerHandlerMap.put(managerName, new LASClassManagerHandler(classesManager, hook, classesClazz));
+      classesManagerHandlerMap.put(managerName, new LASClassManagerHandler(classesManager, classesClazz));
       LASClassManagerFactory.putManager(classesClazz, classesManager);
       logger.info("cache hook classes to factory:" + classesClazz.getSimpleName());
       hookClasses.add(classesClazz);

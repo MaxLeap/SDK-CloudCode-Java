@@ -1,8 +1,6 @@
 package as.leap.code.impl;
 
-import as.leap.code.Request;
-import as.leap.code.Response;
-import as.leap.code.LASHandler;
+import as.leap.code.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,9 +34,30 @@ public class ZFunctionTest {
         return response;
       }
     });
-    final Request request = new LASRequest(null);
+    Request request = new LASRequest(null,null);
     //invoke defined function.
     Response response = functions.getHandler(functionName).handle(request);
+    Assert.assertTrue(response.succeeded());
+    Assert.assertEquals("world.", response.getResult());
+  }
+
+  @Test
+  public void functionWithUserPrincical(){
+    functions.define(functionName, new LASHandler<Request, Response>() {
+      @Override
+      public Response handle(Request request) {
+        UserPrincipal userPrincipal = request.getUserPrincipal();
+        System.out.println(userPrincipal);
+        Response<String> response = new LASResponse<String>(String.class);
+        response.setResult("world.");
+        return response;
+      }
+    });
+    UserPrincipal userPrincipal = new UserPrincipal();
+    userPrincipal.setAppId("appId");
+    userPrincipal.setIdentityType(IdentityType.MASTER_KEY);
+    userPrincipal.setKey("masterKey");
+    Response response = functions.getHandler(functionName).handle(new LASRequest(null, userPrincipal));
     Assert.assertTrue(response.succeeded());
     Assert.assertEquals("world.", response.getResult());
   }
@@ -54,7 +73,7 @@ public class ZFunctionTest {
       }
     });
 
-    final Request request = new LASRequest(null);
+    Request request = new LASRequest(null,null);
     //invoke defined function.
     Response response = functions.getHandler(functionName).handle(request);
     Assert.assertFalse(response.succeeded());
@@ -74,7 +93,7 @@ public class ZFunctionTest {
         return response;
       }
     });
-    final Request request = new LASRequest("100");
+    final Request request = new LASRequest("100",null);
     //invoke defined function.
     Response response = functions.getHandler(functionName).handle(request);
     Assert.assertTrue(response.succeeded());
@@ -110,7 +129,7 @@ public class ZFunctionTest {
     bookJson.put("author", "stream");
 
     String bookJsonStr = LASJsonParser.asJson(bookJson);
-    final Request request = new LASRequest(bookJsonStr);
+    Request request = new LASRequest(bookJsonStr,null);
     //invoke defined function.
     Response response = functions.getHandler(functionName).handle(request);
     String responseJsonStr = LASJsonParser.asJson(response.getResult());

@@ -25,10 +25,12 @@ public class AssistLASClassManagerImpl<T> implements AssistLASClassManager<T> {
     this.apiAddress = CloudCodeContants.DEFAULT_API_ADDRESS_PREFIX + path;
   }
 
+
+
   @Override
-  public FindMsg<T> find(LASQuery query) {
+  public FindMsg<T> find(LASQuery query, UserPrincipal userPrincipal) {
     try {
-      String response = WebUtils.doPost(apiAddress + "/query", CloudCodeContants.HEADERS, serializeLasQueryForPostQuest(query), CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
+      String response = WebUtils.doPost(apiAddress + "/query", CloudCodeContants.getHeaders(userPrincipal), serializeLasQueryForPostQuest(query), CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
       LOGGER.info("get response of find[" + apiAddress + "/query]:" + response);
       JsonNode jsonNode = LASJsonParser.asJsonNode(response);
       ArrayNode results = (ArrayNode) jsonNode.get("results");
@@ -47,9 +49,9 @@ public class AssistLASClassManagerImpl<T> implements AssistLASClassManager<T> {
   }
 
   @Override
-  public SaveMsg create(T obj) throws as.leap.code.LASException {
+  public SaveMsg create(T obj, UserPrincipal userPrincipal) throws as.leap.code.LASException {
     try {
-      String response = WebUtils.doPost(apiAddress, CloudCodeContants.HEADERS, LASJsonParser.asJson(obj), CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
+      String response = WebUtils.doPost(apiAddress, CloudCodeContants.getHeaders(userPrincipal), LASJsonParser.asJson(obj), CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
       LOGGER.info("get response of create[" + apiAddress + "]:" + response);
       return LASJsonParser.asObject(response, SaveMsg.class);
     } catch (Exception e) {
@@ -58,9 +60,9 @@ public class AssistLASClassManagerImpl<T> implements AssistLASClassManager<T> {
   }
 
   @Override
-  public T findById(String id) {
+  public T findById(String id, UserPrincipal userPrincipal) {
     try {
-      String response = WebUtils.doGet(apiAddress + "/" + id, CloudCodeContants.HEADERS, null);
+      String response = WebUtils.doGet(apiAddress + "/" + id, CloudCodeContants.getHeaders(userPrincipal), null);
       LOGGER.info("get response of findById[" + apiAddress + "/" + id + "]:" + response);
       if ("{}".equals(response)) return null;
       return LASJsonParser.asObject(response, tClass);
@@ -70,9 +72,9 @@ public class AssistLASClassManagerImpl<T> implements AssistLASClassManager<T> {
   }
 
   @Override
-  public UpdateMsg update(String id, LASUpdate update) throws as.leap.code.LASException {
+  public UpdateMsg update(String id, LASUpdate update, UserPrincipal userPrincipal) throws as.leap.code.LASException {
     try {
-      String response = WebUtils.doPut(apiAddress + "/" + id, CloudCodeContants.HEADERS, LASJsonParser.asJson(update.update()), CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
+      String response = WebUtils.doPut(apiAddress + "/" + id, CloudCodeContants.getHeaders(userPrincipal), LASJsonParser.asJson(update.update()), CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
       LOGGER.info("get response of update[" + apiAddress + "/" + id + "](" + update.update() + "):" + response);
       return LASJsonParser.asObject(response, UpdateMsg.class);
     } catch (Exception e) {
@@ -81,14 +83,39 @@ public class AssistLASClassManagerImpl<T> implements AssistLASClassManager<T> {
   }
 
   @Override
-  public DeleteMsg delete(String id) {
+  public DeleteMsg delete(String id, UserPrincipal userPrincipal) {
     try {
-      String response = WebUtils.doDelete(apiAddress + "/" + id, CloudCodeContants.HEADERS, null);
+      String response = WebUtils.doDelete(apiAddress + "/" + id, CloudCodeContants.getHeaders(userPrincipal), null);
       LOGGER.info("get response of delete[" + apiAddress + "/" + id + "]:" + response);
       return LASJsonParser.asObject(response, DeleteMsg.class);
     } catch (Exception e) {
       throw new as.leap.code.LASException(e);
     }
+  }
+
+  @Override
+  public SaveMsg create(T coin) {
+    return this.create(coin,null);
+  }
+
+  @Override
+  public T findById(String id) {
+    return this.findById(id,null);
+  }
+
+  @Override
+  public UpdateMsg update(String id, LASUpdate update) {
+    return this.update(id,update,null);
+  }
+
+  @Override
+  public DeleteMsg delete(String id) {
+    return this.delete(id,null);
+  }
+
+  @Override
+  public FindMsg<T> find(LASQuery query) {
+    return this.find(query,null);
   }
 
   String serializeLasQueryForPostQuest(LASQuery lasQuery) {

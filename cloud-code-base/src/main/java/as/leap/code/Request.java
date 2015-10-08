@@ -14,7 +14,5 @@ public interface Request {
    */
   <T> T parameter(Class<T> clazz);
 
-  boolean isUseMasterKey();
-
-  void useMasterKey();
+  UserPrincipal getUserPrincipal();
 }

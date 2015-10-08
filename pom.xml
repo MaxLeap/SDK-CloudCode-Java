@@ -51,6 +51,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <nexus.develop.host>10.10.10.137:8081</nexus.develop.host>
+    <nexus.production.host>54.164.163.132:8081</nexus.production.host>
     <las-sdk-data-api.version>3.0.1</las-sdk-data-api.version>
     <jackson.version>2.5.3</jackson.version>
     <junit.version>4.11</junit.version>

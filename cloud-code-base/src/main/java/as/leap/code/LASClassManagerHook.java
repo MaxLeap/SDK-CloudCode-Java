@@ -16,16 +16,16 @@ public interface LASClassManagerHook<T> {
    * @param entity operator object
    * @return BeforeResult result of before create entity
    */
-  BeforeResult<T> beforeCreate(T entity);
+  BeforeResult<T> beforeCreate(T entity, UserPrincipal userPrincipal);
 
   /**
    * hook after save
    *
    * @param beforeResult result of before create entity
-   * @param saveMessage result of create entity
+   * @param saveMessage  result of create entity
    * @return AfterResult result of after create entity
    */
-  AfterResult afterCreate(BeforeResult<T> beforeResult, SaveMsg saveMessage);
+  AfterResult afterCreate(BeforeResult<T> beforeResult, SaveMsg saveMessage, UserPrincipal userPrincipal);
 
   /**
    * hook before delete
@@ -33,7 +33,7 @@ public interface LASClassManagerHook<T> {
    * @param objectId entity object id
    * @return BeforeResult result of before delete entity
    */
-  BeforeResult<String> beforeDelete(String objectId);
+  BeforeResult<String> beforeDelete(String objectId, UserPrincipal userPrincipal);
 
   /**
    * hook before delete
@@ -41,23 +41,25 @@ public interface LASClassManagerHook<T> {
    * @param objectIds collection of entity objects id
    * @return BeforeResult result of before delete some of entity object by id
    */
-  BeforeResult<String[]> beforeDelete(String[] objectIds);
+  BeforeResult<String[]> beforeDelete(String[] objectIds, UserPrincipal userPrincipal);
 
   /**
    * hook after delete
-   * @param beforeResult result of before delete entity
+   *
+   * @param beforeResult  result of before delete entity
    * @param deleteMessage result of delete entity
    * @return result of after delete entity
    */
-  AfterResult afterDelete(BeforeResult<String> beforeResult, DeleteMsg deleteMessage);
+  AfterResult afterDelete(BeforeResult<String> beforeResult, DeleteMsg deleteMessage, UserPrincipal userPrincipal);
 
   /**
    * do something after completed update operation.
-   * @param objectId object id of entity
+   *
+   * @param objectId      object id of entity
    * @param updateMessage result of update entity
    * @return result of after delete entity
    */
-  AfterResult afterUpdate(String objectId, UpdateMsg updateMessage);
+  AfterResult afterUpdate(String objectId, UpdateMsg updateMessage, UserPrincipal userPrincipal);
 
 
 }

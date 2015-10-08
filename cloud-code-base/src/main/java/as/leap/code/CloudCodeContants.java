@@ -16,8 +16,12 @@ import java.util.Properties;
  */
 public class CloudCodeContants {
 
+  public final static String CONTENT_TYPE = "Content-Type";
+  public final static String APPLICATION_JSON = "application/json";
   public final static String HEADER_ZCLOUD_APPID = "X-ZCloud-AppId";
   public final static String HEADER_ZCLOUD_MASTERKEY = "X-ZCloud-MasterKey";
+  public static final String HEADER_ZCLOUD_SESSIONTOKEN = "X-ZCloud-Session-Token";
+  public static final String HEADER_ZCLOUD_APIKEY = "X-ZCloud-APIKey";
   public final static String HEADER_ZCLOUD_REQUEST_FROM_CLOUDCODE = "X-ZCloud-Request-From-Cloudcode";
   public static String DEFAULT_API_ADDRESS_PREFIX = "http://apiuat.zcloud.io/2.0";
   public final static int DEFAULT_TIMEOUT = 5000;
@@ -30,7 +34,7 @@ public class CloudCodeContants {
     GLOBAL_CONFIG = loadGlobalConfig();
     LEAP_CONFIG = loadLeapConfig();
     DEFAULT_API_ADDRESS_PREFIX = LEAP_CONFIG.getProperty("url.leap", "http://apiuat.zcloud.io/2.0");
-    initHeader();
+    initBaseHeader();
   }
 
   private static GlobalConfig loadGlobalConfig() {
@@ -61,9 +65,32 @@ public class CloudCodeContants {
     return properties;
   }
 
-  private static void initHeader() {
-    HEADERS.put(CloudCodeContants.HEADER_ZCLOUD_APPID, GLOBAL_CONFIG.getApplicationID());
-    HEADERS.put(CloudCodeContants.HEADER_ZCLOUD_MASTERKEY, GLOBAL_CONFIG.getApplicationKey());
-    HEADERS.put(CloudCodeContants.HEADER_ZCLOUD_REQUEST_FROM_CLOUDCODE, "true");
+  private static void initBaseHeader() {
+    HEADERS.put(CONTENT_TYPE,APPLICATION_JSON);
+    HEADERS.put(HEADER_ZCLOUD_APPID, GLOBAL_CONFIG.getApplicationID());
+//    HEADERS.put(CloudCodeContants.HEADER_ZCLOUD_MASTERKEY, GLOBAL_CONFIG.getApplicationKey());
+    HEADERS.put(HEADER_ZCLOUD_REQUEST_FROM_CLOUDCODE, "true");
+  }
+
+  public static Map<String,String> getHeaders(UserPrincipal userPrincipal){
+    Map<String,String> headers = new HashMap<String,String>();
+    headers.putAll(CloudCodeContants.HEADERS);
+    if (userPrincipal == null) {
+      headers.put(HEADER_ZCLOUD_MASTERKEY,GLOBAL_CONFIG.getApplicationKey());
+    } else {
+      switch (userPrincipal.getIdentityType()) {
+        case API_KEY:
+          headers.put(HEADER_ZCLOUD_APIKEY, userPrincipal.getKey());
+          break;
+        case MASTER_KEY:
+          headers.put(HEADER_ZCLOUD_MASTERKEY, userPrincipal.getKey());
+          break;
+        case APP_USER:
+        case ORG_USER:
+          headers.put(HEADER_ZCLOUD_SESSIONTOKEN,userPrincipal.getSessionToken());
+          break;
+      }
+    }
+    return headers;
   }
 }
