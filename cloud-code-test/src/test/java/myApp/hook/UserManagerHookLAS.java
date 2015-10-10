@@ -1,7 +1,7 @@
 package myApp.hook;
 
-import as.leap.code.ClassManager;
-import as.leap.code.impl.LASClassManagerHookBase;
+import com.maxleap.code.ClassManager;
+import com.maxleap.code.impl.LASClassManagerHookBase;
 import myApp.entity.User;
 
 /**

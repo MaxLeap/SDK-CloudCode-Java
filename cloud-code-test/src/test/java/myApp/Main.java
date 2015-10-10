@@ -1,9 +1,9 @@
 package myApp;
 
-import as.leap.code.*;
-import as.leap.code.impl.GlobalConfig;
-import as.leap.code.impl.LoaderBase;
-import as.leap.code.impl.LASResponse;
+import com.maxleap.code.*;
+import com.maxleap.code.impl.GlobalConfig;
+import com.maxleap.code.impl.LoaderBase;
+import com.maxleap.code.impl.LASResponse;
 
 /**
  *
