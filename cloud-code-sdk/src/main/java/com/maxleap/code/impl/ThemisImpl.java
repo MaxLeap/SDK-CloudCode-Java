@@ -1,7 +1,7 @@
 package com.maxleap.code.impl;
 
 import com.maxleap.code.CloudCodeContants;
-import com.maxleap.code.LASException;
+import com.maxleap.code.MLException;
 import com.maxleap.code.Logger;
 import com.maxleap.code.LoggerFactory;
 import com.maxleap.code.themis.Themis;
@@ -46,7 +46,7 @@ public class ThemisImpl implements Themis {
       String response = WebUtils.doPost(getFullCountAddress(null, name), headers, null, CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
       LOGGER.info("get response of generateCounter[" + getFullCountAddress(null, name) + "]:" + response);
     } catch (Exception e) {
-      throw new LASException(e);
+      throw new MLException(e);
     }
   }
 
@@ -57,7 +57,7 @@ public class ThemisImpl implements Themis {
       LOGGER.info("get response of get[" + getFullCountAddress(null, name) + "]:" + response);
       return Long.parseLong(response);
     } catch (Exception e) {
-      throw new LASException(e);
+      throw new MLException(e);
     }
   }
 
@@ -68,7 +68,7 @@ public class ThemisImpl implements Themis {
       LOGGER.info("get response of incrementAndGet[" + getFullCountAddress("incrementAndGet", name) + "]:" + response);
       return Long.parseLong(response);
     } catch (Exception e) {
-      throw new LASException(e);
+      throw new MLException(e);
     }
   }
 
@@ -79,7 +79,7 @@ public class ThemisImpl implements Themis {
       LOGGER.info("get response of getAndIncrement[" + getFullCountAddress("getAndIncrement", name) + "]:" + response);
       return Long.parseLong(response);
     } catch (Exception e) {
-      throw new LASException(e);
+      throw new MLException(e);
     }
   }
 
@@ -90,7 +90,7 @@ public class ThemisImpl implements Themis {
       LOGGER.info("get response of decrementAndGet[" + getFullCountAddress("decrementAndGet", name) + "]:" + response);
       return Long.parseLong(response);
     } catch (Exception e) {
-      throw new LASException(e);
+      throw new MLException(e);
     }
   }
 
@@ -101,7 +101,7 @@ public class ThemisImpl implements Themis {
       LOGGER.info("get response of addAndGet[" + getFullCountAddress("addAndGet", name) + "/" + String.valueOf(value) + "]:" + response);
       return Long.parseLong(response);
     } catch (Exception e) {
-      throw new LASException(e);
+      throw new MLException(e);
     }
   }
 
@@ -112,7 +112,7 @@ public class ThemisImpl implements Themis {
       LOGGER.info("get response of getAndAdd[" + getFullCountAddress("getAndAdd", name) + "/" + String.valueOf(value) + "]:" + response);
       return Long.parseLong(response);
     } catch (Exception e) {
-      throw new LASException(e);
+      throw new MLException(e);
     }
   }
 
@@ -123,7 +123,7 @@ public class ThemisImpl implements Themis {
       LOGGER.info("get response of compareAndSet[" + getFullCountAddress("compareAndSet", name) + "/" + String.valueOf(expected) + "/" + String.valueOf(value) + "]:" + response);
       return Boolean.parseBoolean(response);
     } catch (Exception e) {
-      throw new LASException(e);
+      throw new MLException(e);
     }
   }
 
@@ -133,7 +133,7 @@ public class ThemisImpl implements Themis {
       String response = WebUtils.doGet(getFullLockAddress(name), headers, null);
       LOGGER.info("get response of getLock[" + getFullLockAddress(name) + "]:" + response);
     } catch (Exception e) {
-      throw new LASException(e);
+      throw new MLException(e);
     }
   }
 
@@ -143,7 +143,7 @@ public class ThemisImpl implements Themis {
       String response = WebUtils.doDelete(getFullLockAddress(name), headers, null);
       LOGGER.info("get response of getLock[" + getFullLockAddress(name) + "]:" + response);
     } catch (Exception e) {
-      throw new LASException(e);
+      throw new MLException(e);
     }
   }
 }

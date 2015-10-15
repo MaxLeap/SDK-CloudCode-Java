@@ -13,7 +13,7 @@ public interface Definer {
    * @param name    handler name
    * @param handler function/job handler
    */
-  void define(String name, LASHandler<? extends Request, ? extends Response> handler);
+  void define(String name, MLHandler<? extends Request, ? extends Response> handler);
 
   /**
    * get ZHandler for invoking.
@@ -23,7 +23,7 @@ public interface Definer {
    * @param name handler name
    * @return function/job handler
    */
-  LASHandler<Request, Response> getHandler(String name);
+  MLHandler<Request, Response> getHandler(String name);
 
   /**
    * get name of all handler

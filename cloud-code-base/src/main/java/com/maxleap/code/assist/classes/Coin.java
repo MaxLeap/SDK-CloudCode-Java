@@ -2,7 +2,7 @@ package com.maxleap.code.assist.classes;
 
 
 import com.maxleap.code.assist.Path;
-import com.maxleap.las.sdk.LASObject;
+import com.maxleap.las.sdk.MLObject;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Path("/coins")
-public class Coin extends LASObject {
+public class Coin extends MLObject {
   //货币名称
   private String name;
   //货币描述，用于显示

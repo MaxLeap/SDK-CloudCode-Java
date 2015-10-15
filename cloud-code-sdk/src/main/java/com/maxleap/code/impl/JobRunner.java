@@ -10,11 +10,11 @@ import com.maxleap.code.*;
 public class JobRunner<T> extends Thread {
 
   private static final Logger logger = LoggerFactory.getLogger(JobRunner.class);
-  private LASHandler<Request, Response<T>> handler;
+  private MLHandler<Request, Response<T>> handler;
   private Request request;
   private boolean running;
 
-  public JobRunner(LASHandler<Request, Response<T>> handler, Request request) {
+  public JobRunner(MLHandler<Request, Response<T>> handler, Request request) {
     this.handler = handler;
     this.request = request;
     this.running = true;
@@ -27,7 +27,7 @@ public class JobRunner<T> extends Thread {
   @Override
   public void run() {
     try {
-      LASResponse<T> response = (LASResponse<T>) handler.handle(request);
+      MLResponse<T> response = (MLResponse<T>) handler.handle(request);
       if (response.succeeded()) {
         JavaType type = response.getResultType();
         String result;
@@ -39,7 +39,7 @@ public class JobRunner<T> extends Thread {
             type.getRawClass() == Float.class) {
           result = response.getResult().toString();
         } else {
-          result = LASJsonParser.asJson(response.getResult());
+          result = MLJsonParser.asJson(response.getResult());
         }
         logger.info(result);
       } else {

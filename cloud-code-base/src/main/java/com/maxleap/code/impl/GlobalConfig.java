@@ -1,6 +1,6 @@
 package com.maxleap.code.impl;
 
-import com.maxleap.code.LASException;
+import com.maxleap.code.MLException;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
@@ -22,38 +22,38 @@ public class GlobalConfig {
   }
 
   public GlobalConfig(String jsonStr) {
-    this(LASJsonParser.asJsonNode(jsonStr));
+    this(MLJsonParser.asJsonNode(jsonStr));
   }
 
   public GlobalConfig(JsonNode jsonNode) {
     if (!jsonNode.has("applicationId"))
-      throw new LASException("Your applicationId is miss.Please check your global.json config.");
+      throw new MLException("Your applicationId is miss.Please check your global.json config.");
     applicationID = jsonNode.get("applicationId").asText();
     if (applicationID == null || applicationID.trim().equals(""))
-      throw new LASException("Your applicationId is empty.Please check your global.json config.");
+      throw new MLException("Your applicationId is empty.Please check your global.json config.");
 
     if (!jsonNode.has("applicationKey"))
-      throw new LASException("Your applicationKey is miss.Please check your global.json config.");
+      throw new MLException("Your applicationKey is miss.Please check your global.json config.");
     applicationKey = jsonNode.get("applicationKey").asText();
     if (applicationKey == null || applicationKey.trim().equals(""))
-      throw new LASException("Your applicationKey is empty.Please check your global.json config.");
+      throw new MLException("Your applicationKey is empty.Please check your global.json config.");
 
-    if (!jsonNode.has("version")) throw new LASException("Your version is miss.Please check your global.json config.");
+    if (!jsonNode.has("version")) throw new MLException("Your version is miss.Please check your global.json config.");
     version = jsonNode.get("version").asText();
     if (version == null || version.trim().equals(""))
-      throw new LASException("Your version is empty.Please check your global.json config.");
+      throw new MLException("Your version is empty.Please check your global.json config.");
 
     if (!jsonNode.has("applicationName"))
-      throw new LASException("Your applicationName is miss.Please check your global.json config.");
+      throw new MLException("Your applicationName is miss.Please check your global.json config.");
     applicationName = jsonNode.get("applicationName").asText();
     if (applicationName == null || applicationName.trim().equals(""))
-      throw new LASException("Your applicationName is empty.Please check your global.json config.");
+      throw new MLException("Your applicationName is empty.Please check your global.json config.");
 
     if (!jsonNode.has("javaMain"))
-      throw new LASException("Your javaMain is miss.Please check your global.json config.");
+      throw new MLException("Your javaMain is miss.Please check your global.json config.");
     codeMain = jsonNode.get("javaMain").asText();
     if (codeMain == null || codeMain.trim().equals(""))
-      throw new LASException("Your javaMain is empty.Please check your global.json config.");
+      throw new MLException("Your javaMain is empty.Please check your global.json config.");
 
     packageHook = jsonNode.has("packageHook") ? jsonNode.path("packageHook").asText() : null;
     packageClasses = jsonNode.has("packageClasses") ? jsonNode.path("packageClasses").asText() : null;

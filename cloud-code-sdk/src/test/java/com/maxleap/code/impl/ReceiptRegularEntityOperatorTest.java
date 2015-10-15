@@ -22,7 +22,7 @@ public class ReceiptRegularEntityOperatorTest {
 
   @Test
   public void baseOperatorLifeCycleTest() {
-    ReceiptRegularLASClassManager receiptRegularEntityOperator = new ReceiptRegularLASClassManager(ReceiptRegular.class);
+    ReceiptRegularMLClassManager receiptRegularEntityOperator = new ReceiptRegularMLClassManager(ReceiptRegular.class);
     //create
     ReceiptRegular receiptRegular = new ReceiptRegular();
     receiptRegular.setName("slvtest");
@@ -40,11 +40,11 @@ public class ReceiptRegularEntityOperatorTest {
     //findById
     ReceiptRegular receiptRegular1 = receiptRegularEntityOperator.findById(saveMsg.objectIdString());
     Assert.assertNotNull(receiptRegular1);
-    System.out.println(LASJsonParser.asJson(receiptRegular1));
+    System.out.println(MLJsonParser.asJson(receiptRegular1));
     Assert.assertEquals("slvtest", receiptRegular1.getName());
 
     //update
-    LASUpdate update = LASUpdate.getUpdate();
+    MLUpdate update = MLUpdate.getUpdate();
     update.set("name", "slvtest2");
     UpdateMsg updateMsg = receiptRegularEntityOperator.update(saveMsg.objectIdString(), update);
     Assert.assertNotNull(updateMsg);
@@ -52,7 +52,7 @@ public class ReceiptRegularEntityOperatorTest {
     Assert.assertTrue(updateMsg.number() == 1);
 
     //find
-    LASQuery lasQuery = LASQuery.instance();
+    MLQuery lasQuery = MLQuery.instance();
     lasQuery.equalTo("name", "slvtest2");
     FindMsg<ReceiptRegular> receiptRegularFindMsg = receiptRegularEntityOperator.find(lasQuery);
     Assert.assertNotNull(receiptRegularFindMsg);

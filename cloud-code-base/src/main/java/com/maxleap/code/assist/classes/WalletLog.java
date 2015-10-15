@@ -1,7 +1,7 @@
 package com.maxleap.code.assist.classes;
 
 import com.maxleap.code.assist.Path;
-import com.maxleap.las.sdk.LASObject;
+import com.maxleap.las.sdk.MLObject;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Path("/walletLogs")
-public class WalletLog extends LASObject {
+public class WalletLog extends MLObject {
   //用户ID
   private String uId;
   //钱包ID

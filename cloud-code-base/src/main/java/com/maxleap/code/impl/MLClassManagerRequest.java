@@ -4,7 +4,7 @@ import com.maxleap.code.IdentityType;
 import com.maxleap.code.MethodName;
 import com.maxleap.code.Request;
 import com.maxleap.code.UserPrincipal;
-import com.maxleap.las.sdk.LASUpdate;
+import com.maxleap.las.sdk.MLUpdate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -15,7 +15,7 @@ import java.util.Map;
  * User：poplar
  * Date：15/9/17
  */
-public class LASClassManagerRequest implements Request {
+public class MLClassManagerRequest implements Request {
 
   //请求参数
   private Object params;
@@ -67,39 +67,39 @@ public class LASClassManagerRequest implements Request {
 
   @Override
   public String toString() {
-    return "LASEntityManagerRequest{" +
+    return "MLEntityManagerRequest{" +
         "params='" + params + '\'' +
         ", userPrincipal=" + userPrincipal +
         ", method=" + method.getMethodName() +
         '}';
   }
 
-  public <K> LASClassManagerCreateRequest<K> asCreateRequest(Class<K> entityClazz) {
-    K entity = LASJsonParser.asObject(LASJsonParser.asJson(params), entityClazz);
-    return new LASClassManagerCreateRequest<K>(entity, userPrincipal);
+  public <K> MLClassManagerCreateRequest<K> asCreateRequest(Class<K> entityClazz) {
+    K entity = MLJsonParser.asObject(MLJsonParser.asJson(params), entityClazz);
+    return new MLClassManagerCreateRequest<K>(entity, userPrincipal);
   }
 
-  public LASClassManagerUpdateRequest asUpdateRequest() {
+  public MLClassManagerUpdateRequest asUpdateRequest() {
     Map<String, Object> map = (Map) params;
     String objectId = map.get("objectId").toString();
     Map<String, Object> update = (Map) map.get("update");
-    return new LASClassManagerUpdateRequest(objectId, update);
+    return new MLClassManagerUpdateRequest(objectId, update);
   }
 
-  public LASClassManagerDeleteRequest asDeleteRequest() {
-    return new LASClassManagerDeleteRequest(params.toString());
+  public MLClassManagerDeleteRequest asDeleteRequest() {
+    return new MLClassManagerDeleteRequest(params.toString());
   }
 
-  public LASClassManagerDeleteBatchRequest asDeleteBatchRequest() {
+  public MLClassManagerDeleteBatchRequest asDeleteBatchRequest() {
     List<String> objectIds = (List) params;
-    return new LASClassManagerDeleteBatchRequest(objectIds.toArray(new String[objectIds.size()]));
+    return new MLClassManagerDeleteBatchRequest(objectIds.toArray(new String[objectIds.size()]));
   }
 
-  public class LASClassManagerCreateRequest<K> {
+  public class MLClassManagerCreateRequest<K> {
     private K entity;
     private UserPrincipal userPrincipal;
 
-    public LASClassManagerCreateRequest(K entity, UserPrincipal userPrincipal) {
+    public MLClassManagerCreateRequest(K entity, UserPrincipal userPrincipal) {
       this.entity = entity;
       this.userPrincipal = userPrincipal;
     }
@@ -113,11 +113,11 @@ public class LASClassManagerRequest implements Request {
     }
   }
 
-  public class LASClassManagerUpdateRequest {
+  public class MLClassManagerUpdateRequest {
     private String objectId;
     private Map<String, Object> update;
 
-    public LASClassManagerUpdateRequest(String objectId, Map<String, Object> update) {
+    public MLClassManagerUpdateRequest(String objectId, Map<String, Object> update) {
       this.objectId = objectId;
       this.update = update;
     }
@@ -138,16 +138,16 @@ public class LASClassManagerRequest implements Request {
       this.update = update;
     }
 
-    public LASUpdate lasUpdate() {
-      return LASUpdate.getUpdate(update);
+    public MLUpdate lasUpdate() {
+      return MLUpdate.getUpdate(update);
     }
 
   }
 
-  public class LASClassManagerDeleteRequest {
+  public class MLClassManagerDeleteRequest {
     private String objectId;
 
-    public LASClassManagerDeleteRequest(String objectId) {
+    public MLClassManagerDeleteRequest(String objectId) {
       this.objectId = objectId;
     }
 
@@ -156,10 +156,10 @@ public class LASClassManagerRequest implements Request {
     }
   }
 
-  public class LASClassManagerDeleteBatchRequest {
+  public class MLClassManagerDeleteBatchRequest {
     private String[] objectIds;
 
-    public LASClassManagerDeleteBatchRequest(String[] objectIds) {
+    public MLClassManagerDeleteBatchRequest(String[] objectIds) {
       this.objectIds = objectIds;
     }
 
@@ -169,7 +169,7 @@ public class LASClassManagerRequest implements Request {
   }
 
   public static void main(String[] args) {
-    LASClassManagerRequest request = new LASClassManagerRequest();
+    MLClassManagerRequest request = new MLClassManagerRequest();
     request.setMethod(MethodName.CREATE);
     UserPrincipal userPrincipal = new UserPrincipal();
     userPrincipal.setAppId("aa");
@@ -177,7 +177,7 @@ public class LASClassManagerRequest implements Request {
     userPrincipal.setSessionToken("sessionTokenTest");
     request.setUserPrincipal(userPrincipal);
     request.setParams("{\"a\":123}");
-    String json = LASJsonParser.asJson(request);
+    String json = MLJsonParser.asJson(request);
     System.out.println(json);
 
     String json2 = "{\"params\":{\"a\":123},\"userPrincipal\":{\"appId\":\"aa\",\"identityType\":\"ORG_USER\",\"id\":null,\"sessionToken\":\"sessionTokenTest\",\"key\":null},\"method\":\"create\"}";
@@ -185,7 +185,7 @@ public class LASClassManagerRequest implements Request {
     String json4 = "{\"params\":[\"123\",\"234\"],\"userPrincipal\":{\"appId\":\"aa\",\"identityType\":\"ORG_USER\",\"id\":null,\"sessionToken\":\"sessionTokenTest\",\"key\":null},\"method\":\"create\"}";
 
     String json5 = "{\"params\":{\"update\":{\"name\":\"234\"},\"objectId\":\"56010ba960b255d4587e49c3\"},\"userPrincipal\":{\"identityType\":\"MASTER_KEY\",\"appId\":\"55598fd560b2f98aa901b619\",\"id\":null,\"sessionToken\":null,\"key\":\"dWhNN2V0eVlYNTdBSDF2elJKUHhpUQ\"},\"method\":\"update\"}";
-    request = LASJsonParser.asObject(json5, LASClassManagerRequest.class);
-    System.out.println(LASJsonParser.asJson(request.asUpdateRequest()));
+    request = MLJsonParser.asObject(json5, MLClassManagerRequest.class);
+    System.out.println(MLJsonParser.asJson(request.asUpdateRequest()));
   }
 }

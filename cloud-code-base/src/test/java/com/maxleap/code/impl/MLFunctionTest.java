@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * Created by stream.
  */
-public class ZFunctionTest {
+public class MLFunctionTest {
 
   private DefineFunction functions;
   private String functionName = "functionName";
@@ -26,15 +26,15 @@ public class ZFunctionTest {
 
   @Test
   public void functionWithoutParams() {
-    functions.define(functionName, new LASHandler<Request, Response<String>>() {
+    functions.define(functionName, new MLHandler<Request, Response<String>>() {
       @Override
       public Response<String> handle(Request request) {
-        Response<String> response = new LASResponse<String>(String.class);
+        Response<String> response = new MLResponse<String>(String.class);
         response.setResult("world.");
         return response;
       }
     });
-    Request request = new LASRequest(null,null);
+    Request request = new MLRequest(null,null);
     //invoke defined function.
     Response response = functions.getHandler(functionName).handle(request);
     Assert.assertTrue(response.succeeded());
@@ -43,12 +43,12 @@ public class ZFunctionTest {
 
   @Test
   public void functionWithUserPrincical(){
-    functions.define(functionName, new LASHandler<Request, Response>() {
+    functions.define(functionName, new MLHandler<Request, Response>() {
       @Override
       public Response handle(Request request) {
         UserPrincipal userPrincipal = request.getUserPrincipal();
         System.out.println(userPrincipal);
-        Response<String> response = new LASResponse<String>(String.class);
+        Response<String> response = new MLResponse<String>(String.class);
         response.setResult("world.");
         return response;
       }
@@ -57,23 +57,23 @@ public class ZFunctionTest {
     userPrincipal.setAppId("appId");
     userPrincipal.setIdentityType(IdentityType.MASTER_KEY);
     userPrincipal.setKey("masterKey");
-    Response response = functions.getHandler(functionName).handle(new LASRequest(null, userPrincipal));
+    Response response = functions.getHandler(functionName).handle(new MLRequest(null, userPrincipal));
     Assert.assertTrue(response.succeeded());
     Assert.assertEquals("world.", response.getResult());
   }
 
   @Test
   public void functionWithFail() {
-    functions.define(functionName, new LASHandler<Request, Response>() {
+    functions.define(functionName, new MLHandler<Request, Response>() {
       @Override
       public Response handle(Request request) {
-        Response<String> response = new LASResponse<String>(String.class);
+        Response<String> response = new MLResponse<String>(String.class);
         response.setError("fail");
         return response;
       }
     });
 
-    Request request = new LASRequest(null,null);
+    Request request = new MLRequest(null,null);
     //invoke defined function.
     Response response = functions.getHandler(functionName).handle(request);
     Assert.assertFalse(response.succeeded());
@@ -83,17 +83,17 @@ public class ZFunctionTest {
 
   @Test
   public void functionWithInteger() {
-    functions.define(functionName, new LASHandler<Request, Response<Integer>>() {
+    functions.define(functionName, new MLHandler<Request, Response<Integer>>() {
       @Override
       public Response<Integer> handle(Request request) {
         int value = request.parameter(int.class);
         Assert.assertEquals(100, value);
-        Response<Integer> response = new LASResponse<Integer>(int.class);
+        Response<Integer> response = new MLResponse<Integer>(int.class);
         response.setResult(101);
         return response;
       }
     });
-    final Request request = new LASRequest("100",null);
+    final Request request = new MLRequest("100",null);
     //invoke defined function.
     Response response = functions.getHandler(functionName).handle(request);
     Assert.assertTrue(response.succeeded());
@@ -107,7 +107,7 @@ public class ZFunctionTest {
     queryBook.setName("name");
     queryBook.setAuthor("stream");
 
-    functions.define(functionName, new LASHandler<Request, Response<List<Book>>>() {
+    functions.define(functionName, new MLHandler<Request, Response<List<Book>>>() {
       @Override
       public Response<List<Book>> handle(Request request) {
         Book book = request.parameter(Book.class);
@@ -117,7 +117,7 @@ public class ZFunctionTest {
 
         List<Book> books = new ArrayList<Book>();
         books.add(book);
-        Response<List<Book>> response = new LASResponse<List<Book>>(Book.class, true);
+        Response<List<Book>> response = new MLResponse<List<Book>>(Book.class, true);
         response.setResult(books);
         return response;
       }
@@ -128,12 +128,12 @@ public class ZFunctionTest {
     bookJson.put("name", "name");
     bookJson.put("author", "stream");
 
-    String bookJsonStr = LASJsonParser.asJson(bookJson);
-    Request request = new LASRequest(bookJsonStr,null);
+    String bookJsonStr = MLJsonParser.asJson(bookJson);
+    Request request = new MLRequest(bookJsonStr,null);
     //invoke defined function.
     Response response = functions.getHandler(functionName).handle(request);
-    String responseJsonStr = LASJsonParser.asJson(response.getResult());
-    List<Book> bookList = LASJsonParser.asObject(responseJsonStr, ((LASResponse) response).getResultType());
+    String responseJsonStr = MLJsonParser.asJson(response.getResult());
+    List<Book> bookList = MLJsonParser.asObject(responseJsonStr, ((MLResponse) response).getResultType());
     Assert.assertEquals(1, bookList.size());
     Book book = bookList.get(0);
     Assert.assertEquals(book.getId(), 100);

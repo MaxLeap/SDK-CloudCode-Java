@@ -5,6 +5,6 @@
 
 # use Cloud-code sdk
 
-see [LAS-Demo-CloudCode-Java](https://github.com/LeapCloud/LAS-Demo-CloudCode-Java)
+see [Demo-CloudCode-Java](https://github.com/LeapCloud/Demo-CloudCode-Java)
 
-[more](https://github.com/LeapCloud/LAS-Docs/blob/master/zh/Java/Guide/CloudCode.md) 
+[more](https://github.com/LeapCloud/ML-Docs/blob/master/zh/Java/Guide/CloudCode.md) 

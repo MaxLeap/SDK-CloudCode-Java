@@ -1,7 +1,7 @@
 package com.maxleap.code.assist.classes;
 
 import com.maxleap.code.assist.Path;
-import com.maxleap.las.sdk.LASObject;
+import com.maxleap.las.sdk.MLObject;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.Map;
@@ -13,7 +13,7 @@ import java.util.Map;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Path("/wallets")
-public class Wallet extends LASObject {
+public class Wallet extends MLObject {
   //用户ID
   private String uId;
   //coinId和数量的kv

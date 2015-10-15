@@ -14,7 +14,7 @@ public abstract class LoaderBase implements Loader {
 
   private Definer functionDefiner = new DefineFunction();
   private Definer jobDefiner = new DefineJob();
-  private Definer managerDefiner = new DefineLASClassManager();
+  private Definer managerDefiner = new DefineMLClassManager();
 
   protected LoaderBase() {
     this.definers = new HashMap<String, Definer>();
@@ -28,17 +28,17 @@ public abstract class LoaderBase implements Loader {
     return definers;
   }
 
-  protected void defineFunction(String name, LASHandler<? extends Request, ? extends Response> handler) {
+  protected void defineFunction(String name, MLHandler<? extends Request, ? extends Response> handler) {
     functionDefiner.define(name, handler);
     logger.info("Deployed Cloud Function :" + name);
   }
 
-  protected void defineJob(String name, LASHandler<? extends Request, ? extends Response> handler) {
+  protected void defineJob(String name, MLHandler<? extends Request, ? extends Response> handler) {
     jobDefiner.define(name, handler);
     logger.info("Deployed Cloud Job :" + name);
   }
 
-  void defineClassesManager(String name, LASHandler<? extends Request, ? extends Response> handler) {
+  void defineClassesManager(String name, MLHandler<? extends Request, ? extends Response> handler) {
     managerDefiner.define(name, handler);
     logger.info("Deployed Cloud Classes Manager :" + name);
   }

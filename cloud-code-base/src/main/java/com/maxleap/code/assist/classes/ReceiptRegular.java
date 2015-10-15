@@ -1,7 +1,7 @@
 package com.maxleap.code.assist.classes;
 
 import com.maxleap.code.assist.Path;
-import com.maxleap.las.sdk.LASObject;
+import com.maxleap.las.sdk.MLObject;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Path("/receiptRegulars")
-public class ReceiptRegular extends LASObject {
+public class ReceiptRegular extends MLObject {
   //发票名称
   private String name;
   //应用商店的productID

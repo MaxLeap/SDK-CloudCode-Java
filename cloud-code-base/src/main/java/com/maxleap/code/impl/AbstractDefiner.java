@@ -11,17 +11,17 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 abstract class AbstractDefiner implements Definer {
 
-  protected Map<String, LASHandler<? extends Request, ? extends Response>> handlers;
+  protected Map<String, MLHandler<? extends Request, ? extends Response>> handlers;
   //what kind of action.
   protected RequestCategory category;
 
   protected AbstractDefiner() {
-    this.handlers = new ConcurrentHashMap<String, LASHandler<? extends Request, ? extends Response>>();
+    this.handlers = new ConcurrentHashMap<String, MLHandler<? extends Request, ? extends Response>>();
   }
 
   @Override
-  public LASHandler<Request, Response> getHandler(String name) {
-    return (LASHandler<Request, Response>) handlers.get(name);
+  public MLHandler<Request, Response> getHandler(String name) {
+    return (MLHandler<Request, Response>) handlers.get(name);
   }
 
   @Override
@@ -30,7 +30,7 @@ abstract class AbstractDefiner implements Definer {
   }
 
   @Override
-  public void define(String name, LASHandler<? extends Request, ? extends Response> handler) {
+  public void define(String name, MLHandler<? extends Request, ? extends Response> handler) {
     handlers.put(name, handler);
   }
 

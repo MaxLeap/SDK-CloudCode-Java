@@ -6,14 +6,14 @@ import com.maxleap.las.sdk.SaveMsg;
 import com.maxleap.las.sdk.UpdateMsg;
 import com.maxleap.code.AfterResult;
 import com.maxleap.code.BeforeResult;
-import com.maxleap.code.LASClassManagerHook;
+import com.maxleap.code.MLClassManagerHook;
 import com.maxleap.code.UserPrincipal;
 
 /**
  * User：poplar
  * Date：14-10-28
  */
-public abstract class LASClassManagerHookBase<T> implements LASClassManagerHook<T> {
+public abstract class MLClassManagerHookBase<T> implements MLClassManagerHook<T> {
 
   @Override
   public BeforeResult<T> beforeCreate(T entity, UserPrincipal userPrincipal) {

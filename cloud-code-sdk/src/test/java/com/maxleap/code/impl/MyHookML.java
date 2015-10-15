@@ -11,7 +11,7 @@ import com.maxleap.las.sdk.UpdateMsg;
 /**
  *
  */
-public class MyHookLAS extends LASClassManagerHookBase<Song> {
+public class MyHookML extends MLClassManagerHookBase<Song> {
 
   @Override
   public BeforeResult<Song> beforeCreate(Song entity, UserPrincipal userPrincipal) {

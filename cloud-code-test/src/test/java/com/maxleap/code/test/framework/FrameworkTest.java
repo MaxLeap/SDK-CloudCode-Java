@@ -10,11 +10,11 @@ import org.junit.Test;
 /**
  *
  */
-public class FrameworkTest extends TestCloudCode {
+public class FrameworkTest extends TestCloudCode{
 
-  public FrameworkTest() throws Exception {
-    super("http://10.10.10.193:8080");
-  }
+//  public FrameworkTest() throws Exception {
+//    super("http://10.10.10.193:8080");
+//  }
 
   @Test
   public void function() {

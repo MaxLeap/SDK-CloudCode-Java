@@ -8,7 +8,7 @@ import com.maxleap.las.sdk.UpdateMsg;
 /**
  * The hooks for some db operation.
  */
-public interface LASClassManagerHook<T> {
+public interface MLClassManagerHook<T> {
 
   /**
    * hook before save

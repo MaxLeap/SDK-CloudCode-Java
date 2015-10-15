@@ -23,33 +23,33 @@ public class CloudCodeContants {
   public static final String HEADER_ZCLOUD_SESSIONTOKEN = "X-ZCloud-Session-Token";
   public static final String HEADER_ZCLOUD_APIKEY = "X-ZCloud-APIKey";
   public final static String HEADER_ZCLOUD_REQUEST_FROM_CLOUDCODE = "X-ZCloud-Request-From-Cloudcode";
-  public static String DEFAULT_API_ADDRESS_PREFIX = "http://apiuat.zcloud.io/2.0";
+  public static String DEFAULT_API_ADDRESS_PREFIX = "http://api.las/2.0";
   public final static int DEFAULT_TIMEOUT = 5000;
   public final static int DEFAULT_READ_TIMEOUT = 15000;
   public static GlobalConfig GLOBAL_CONFIG;
   public static Properties LEAP_CONFIG;
   public static Map<String, String> HEADERS = new HashMap<String, String>();
 
-  public static void init() throws LASException {
+  public static void init() throws MLException {
     GLOBAL_CONFIG = loadGlobalConfig();
     LEAP_CONFIG = loadLeapConfig();
-    DEFAULT_API_ADDRESS_PREFIX = LEAP_CONFIG.getProperty("url.leap", "http://apiuat.zcloud.io/2.0");
+    DEFAULT_API_ADDRESS_PREFIX = LEAP_CONFIG.getProperty("url.leap", "http://api.las/2.0");
     initBaseHeader();
   }
 
   private static GlobalConfig loadGlobalConfig() {
     InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("config/global.json");
-    if (inputStream == null) throw new LASException("you must have a global.json config file for your cloud code.");
+    if (inputStream == null) throw new MLException("you must have a global.json config file for your cloud code.");
     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
     try {
       StringBuilder globalBuilder = new StringBuilder();
       String line;
       while ((line = reader.readLine()) != null) globalBuilder.append(line).append("\n");
       return new GlobalConfig(globalBuilder.toString());
-    } catch (LASException e) {
-      throw new LASException("Your global.json config is not match json format.Please check your config. Caused by " + e.getMessage());
+    } catch (MLException e) {
+      throw new MLException("Your global.json config is not match json format.Please check your config. Caused by " + e.getMessage());
     } catch (IOException e) {
-      throw new LASException(e);
+      throw new MLException(e);
     }
   }
 

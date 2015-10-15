@@ -26,27 +26,67 @@ class BootstrapCloudCode {
   private LoaderBase loader;
   private ClassLoader classLoader;
   private Set<Class> hookClasses;
-  private Map<String, LASClassManagerHandler> classesManagerHandlerMap = new ConcurrentHashMap<String, LASClassManagerHandler>();
-  private String restAddr;
+  private Map<String, MLClassManagerHandler> classesManagerHandlerMap = new ConcurrentHashMap<String, MLClassManagerHandler>();
 
-  public void setRestAddr(String restAddr) {
-    this.restAddr = restAddr;
-  }
-
-  public void start() throws Exception {
+  public BootstrapCloudCode() {
     CloudCodeContants.init();
-    if (restAddr != null)
-      CloudCodeContants.DEFAULT_API_ADDRESS_PREFIX = this.restAddr;
     globalConfig = CloudCodeContants.GLOBAL_CONFIG;
     hookClasses = new HashSet<Class>();
     this.classLoader = Thread.currentThread().getContextClassLoader();
+    adapterRegion();
+  }
+
+  protected void setRestAddr(String restAddr) {
+    CloudCodeContants.DEFAULT_API_ADDRESS_PREFIX = restAddr;
+  }
+
+  protected void start() {
     //load hook and manager
     loadHookAndManager();
     cacheClasses();
     loadMain(globalConfig.getCodeMain());
   }
 
-  public LASClassManagerHandler getClassesManagerHandler(String managerName) {
+  private enum Region {
+    US("http://api.maxleap.com/2.0"), CN("http://api.maxleap.cn/2.0");
+
+    private String checkAppIdAddress;
+
+    Region(String checkAppIdAddress) {
+      this.checkAppIdAddress = checkAppIdAddress;
+    }
+
+    public String getCheckAppIdAddress() {
+      return this.checkAppIdAddress + "/apps/%s/info";
+    }
+  }
+
+  private void adapterRegion() {
+    if (checkAppId(Region.CN)) {
+      CloudCodeContants.DEFAULT_API_ADDRESS_PREFIX = Region.CN.checkAppIdAddress;
+    } else if (checkAppId(Region.US)) {
+      CloudCodeContants.DEFAULT_API_ADDRESS_PREFIX = Region.US.checkAppIdAddress;
+    } else {
+      logger.warn("Does not exist app with id "+CloudCodeContants.GLOBAL_CONFIG.getApplicationID()+" from region[" + Region.CN.name() + "," + Region.US.name() + "]");
+    }
+  }
+
+  private boolean checkAppId(Region region) {
+    String result = null;
+    try {
+      result = WebUtils.doGet(String.format(region.getCheckAppIdAddress(), CloudCodeContants.GLOBAL_CONFIG.getApplicationID()), CloudCodeContants.getHeaders(null), null);
+    } catch (IOException e) {
+      if (!e.getMessage().contains("Does not exist app with id " + CloudCodeContants.GLOBAL_CONFIG.getApplicationID()))
+        logger.warn("check appId from region[" + region.name() + "] fail:" + e.getMessage());
+      return Boolean.FALSE;
+    }
+    Map<String, Object> map = MLJsonParser.asMap(result);
+    if (map != null && map.containsKey("objectId") && map.get("objectId").equals(CloudCodeContants.GLOBAL_CONFIG.getApplicationID()))
+      return Boolean.TRUE;
+    else return false;
+  }
+
+  public MLClassManagerHandler getClassesManagerHandler(String managerName) {
     return classesManagerHandlerMap.get(managerName);
   }
 
@@ -54,31 +94,35 @@ class BootstrapCloudCode {
     return this.loader;
   }
 
-  private void loadMain(String userMainClassPath) throws Exception {
-    @SuppressWarnings("unchecked")
-    Class<LoaderBase> clazz = (Class<LoaderBase>) Class.forName(userMainClassPath);
-    loader = clazz.newInstance();
-    loader.main(globalConfig);
+  private void loadMain(String userMainClassPath) {
+    try {
+      @SuppressWarnings("unchecked")
+      Class<LoaderBase> clazz = (Class<LoaderBase>) Class.forName(userMainClassPath);
+      loader = clazz.newInstance();
+      loader.main(globalConfig);
+    } catch (Exception e) {
+      throw new MLException(e);
+    }
   }
 
   private void cacheClasses() {
     //处理不存在hook的entity
     String classesPackage = globalConfig.getPackageClasses();
     if (isBlank(classesPackage)) {
-      logger.warn("Your packageClasses is empty.You will can't operate any LASClassesManager interfaces.");
+      logger.warn("Your packageClasses is empty.You will can't operate any MLClassesManager interfaces.");
       return;
     }
     try {
       List<Class<?>> allClasses = getClassesForPackage(classLoader, classesPackage);
       if (allClasses.size() == 0) {
-        logger.warn("Your packageClasses is empty.You will can't operate any LASClassesManager interfaces.Please check your global.json config");
+        logger.warn("Your packageClasses is empty.You will can't operate any MLClassesManager interfaces.Please check your global.json config");
         return;
       }
       allClasses.removeAll(hookClasses);
       //建立空的entityManager
       for (Class<?> classes : allClasses) {
-        LASClassManager classesManager = new LASClassManagerImpl(null, classes);
-        LASClassManagerFactory.putManager(classes, classesManager);
+        MLClassManager classesManager = new MLClassManagerImpl(null, classes);
+        MLClassManagerFactory.putManager(classes, classesManager);
         logger.info("cache entity to factory:" + classes.getSimpleName());
       }
     } catch (ClassNotFoundException e) {
@@ -87,12 +131,12 @@ class BootstrapCloudCode {
     }
   }
 
-  private void loadHookAndManager() throws Exception {
+  private void loadHookAndManager() {
     String hookPackage = globalConfig.getPackageHook();
     if (isBlank(hookPackage)) return;
 
     URL packageRoot = classLoader.getResource(hookPackage.replace(".", "/"));
-    if (packageRoot == null) throw new LASException("your packageHook is invalid.Please check your global.json config");
+    if (packageRoot == null) throw new MLException("your packageHook is invalid.Please check your global.json config");
     File[] files = new File(packageRoot.getFile()).listFiles(new FilenameFilter() {
       public boolean accept(File dir, String name) {
         return name.endsWith(".class");
@@ -125,12 +169,12 @@ class BootstrapCloudCode {
           }
         }
       }
-      LASClassManagerHookBase hook = (LASClassManagerHookBase) hookClazz.newInstance();
+      MLClassManagerHookBase hook = (MLClassManagerHookBase) hookClazz.newInstance();
       Type[] types = ((ParameterizedType) hookClazz.getGenericSuperclass()).getActualTypeArguments();
       Class classesClazz = (Class) types[0];
-      LASClassManager classesManager = new LASClassManagerImpl(hook, classesClazz);
-      classesManagerHandlerMap.put(managerName, new LASClassManagerHandler(classesManager, classesClazz));
-      LASClassManagerFactory.putManager(classesClazz, classesManager);
+      MLClassManager classesManager = new MLClassManagerImpl(hook, classesClazz);
+      classesManagerHandlerMap.put(managerName, new MLClassManagerHandler(classesManager, classesClazz));
+      MLClassManagerFactory.putManager(classesClazz, classesManager);
       logger.info("cache hook classes to factory:" + classesClazz.getSimpleName());
       hookClasses.add(classesClazz);
     } catch (Exception ex) {

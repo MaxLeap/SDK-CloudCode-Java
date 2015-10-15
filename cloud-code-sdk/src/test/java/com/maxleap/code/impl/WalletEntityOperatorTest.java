@@ -22,7 +22,7 @@ public class WalletEntityOperatorTest {
 
   @Test
   public void baseOperatorLifeCycleTest() {
-    WalletLASClassManager walletEntityOperator = new WalletLASClassManager(Wallet.class);
+    WalletMLClassManager walletEntityOperator = new WalletMLClassManager(Wallet.class);
     //create
     Wallet wallet = new Wallet();
     wallet.setuId("testuid");
@@ -35,11 +35,11 @@ public class WalletEntityOperatorTest {
     //findById
     Wallet wallet1 = walletEntityOperator.findById(saveMsg.objectIdString());
     Assert.assertNotNull(wallet1);
-    System.out.println(LASJsonParser.asJson(wallet1));
+    System.out.println(MLJsonParser.asJson(wallet1));
     Assert.assertEquals("testuid", wallet1.getuId());
 
     //update
-    LASUpdate update = LASUpdate.getUpdate();
+    MLUpdate update = MLUpdate.getUpdate();
     update.set("uId", "testuid");
     UpdateMsg updateMsg = walletEntityOperator.update(saveMsg.objectIdString(), update);
     Assert.assertNotNull(updateMsg);
@@ -47,7 +47,7 @@ public class WalletEntityOperatorTest {
     Assert.assertTrue(updateMsg.number() == 1);
 
     //find
-    LASQuery lasQuery = LASQuery.instance();
+    MLQuery lasQuery = MLQuery.instance();
     lasQuery.equalTo("uId", "testuid");
     FindMsg<Wallet> walletFindMsg = walletEntityOperator.find(lasQuery);
     Assert.assertNotNull(walletFindMsg);

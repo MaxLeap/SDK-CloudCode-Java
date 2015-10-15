@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Created by stream.
  */
-public class LASResponse<T> implements Response<T> {
+public class MLResponse<T> implements Response<T> {
   String logFormat = "Ran cloud %s[%s] with:\n\tInput: %s\n\tResult: %s";
 
   private static final TypeFactory typeFactory = TypeFactory.defaultInstance();
@@ -20,11 +20,11 @@ public class LASResponse<T> implements Response<T> {
   private String errorMessage;
   private Map<String, String> headers = new HashMap<String, String>();
 
-  public LASResponse(Class<T> resultClass) {
+  public MLResponse(Class<T> resultClass) {
     this(resultClass, false);
   }
 
-  public LASResponse(Class<?> resultClass, boolean isCollection) {
+  public MLResponse(Class<?> resultClass, boolean isCollection) {
     if (isCollection) {
       resultType = typeFactory.constructCollectionType(List.class, resultClass);
     } else {

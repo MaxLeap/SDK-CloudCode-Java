@@ -3,10 +3,10 @@ package com.maxleap.code.impl;
 import com.maxleap.code.CloudCodeContants;
 import com.maxleap.code.DeleteResult;
 import com.maxleap.code.SaveResult;
-import com.maxleap.code.LASClassManagerHook;
+import com.maxleap.code.MLClassManagerHook;
 import com.maxleap.las.sdk.FindMsg;
-import com.maxleap.las.sdk.LASQuery;
-import com.maxleap.las.sdk.LASUpdate;
+import com.maxleap.las.sdk.MLQuery;
+import com.maxleap.las.sdk.MLUpdate;
 import com.maxleap.las.sdk.UpdateMsg;
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,16 +17,16 @@ import java.util.UUID;
 /**
  * Created by stream.
  */
-public class LASClassManagerTest {
+public class MLClassManagerTest {
 
-  private LASClassManagerImpl<Song> entityManager;
-  private LASClassManagerHook<Song> hook;
+  private MLClassManagerImpl<Song> entityManager;
+  private MLClassManagerHook<Song> hook;
 
   @Before
   public void setup() {
     CloudCodeContants.init();
-    hook = new MyHookLAS();
-    entityManager = new LASClassManagerImpl<Song>(hook, Song.class);
+    hook = new MyHookML();
+    entityManager = new MLClassManagerImpl<Song>(hook, Song.class);
   }
 
   @Test
@@ -48,7 +48,7 @@ public class LASClassManagerTest {
     Assert.assertEquals(song.getPlayTimes(), findResult.getPlayTimes());
 
     //
-    LASUpdate update = new LASUpdate();
+    MLUpdate update = new MLUpdate();
     update.set("title", song.getTitle() + "_new");
     update.inc("playTimes", 1);
     UpdateMsg updateMsg = entityManager.update(songId.toString(), update);
@@ -63,7 +63,7 @@ public class LASClassManagerTest {
     Assert.assertTrue((song.getPlayTimes() + 1) == findResult.getPlayTimes());
 
     //
-    LASQuery sunQuery = new LASQuery();
+    MLQuery sunQuery = new MLQuery();
     sunQuery.equalTo("objectId", songId.toString());
     FindMsg<Song> songs = entityManager.find(sunQuery, true);
     Assert.assertNotNull(songs);

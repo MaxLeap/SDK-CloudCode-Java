@@ -1,17 +1,17 @@
 package com.maxleap.code.impl;
 
-import com.maxleap.las.sdk.LASObject;
-import com.maxleap.las.sdk.types.LASPointer;
+import com.maxleap.las.sdk.MLObject;
+import com.maxleap.las.sdk.types.MLPointer;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
  * Created by stream on 10/13/14.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Song extends LASObject {
+public class Song extends MLObject {
   private String title;
 
-  private LASPointer trackId;
+  private MLPointer trackId;
 
   private Integer playTimes;
 
@@ -23,11 +23,11 @@ public class Song extends LASObject {
     this.title = title;
   }
 
-  public LASPointer getTrackId() {
+  public MLPointer getTrackId() {
     return trackId;
   }
 
-  public void setTrackId(LASPointer trackId) {
+  public void setTrackId(MLPointer trackId) {
     this.trackId = trackId;
   }
 

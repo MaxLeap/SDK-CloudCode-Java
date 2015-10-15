@@ -7,7 +7,7 @@ import com.maxleap.las.sdk.*;
  * User：poplar
  * Date：15-6-2
  */
-public interface AssistLASClassManager<T> {
+public interface AssistMLClassManager<T> {
 
   //======api for use userPrincipal======
 
@@ -15,11 +15,11 @@ public interface AssistLASClassManager<T> {
 
   T findById(String id, UserPrincipal userPrincipal);
 
-  UpdateMsg update(String id, LASUpdate update, UserPrincipal userPrincipal);
+  UpdateMsg update(String id, MLUpdate update, UserPrincipal userPrincipal);
 
   DeleteMsg delete(String id, UserPrincipal userPrincipal);
 
-  FindMsg<T> find(LASQuery query, UserPrincipal userPrincipal);
+  FindMsg<T> find(MLQuery query, UserPrincipal userPrincipal);
 
 
   //=========api for use masterKey=========
@@ -28,9 +28,9 @@ public interface AssistLASClassManager<T> {
 
   T findById(String id);
 
-  UpdateMsg update(String id, LASUpdate update);
+  UpdateMsg update(String id, MLUpdate update);
 
   DeleteMsg delete(String id);
 
-  FindMsg<T> find(LASQuery query);
+  FindMsg<T> find(MLQuery query);
 }

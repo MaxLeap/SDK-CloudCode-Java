@@ -9,17 +9,17 @@ import java.util.Map;
 /**
  * Created by stream .
  */
-public class LASRequest implements Request {
+public class MLRequest implements Request {
 
   //参数
   private String params;
   //用户信息
   private UserPrincipal userPrincipal;
 
-  public LASRequest() {
+  public MLRequest() {
   }
 
-  public LASRequest(String params, UserPrincipal userPrincipal) {
+  public MLRequest(String params, UserPrincipal userPrincipal) {
     this.params = params;
     this.userPrincipal = userPrincipal;
   }
@@ -59,12 +59,12 @@ public class LASRequest implements Request {
     } else if (clazz.equals(Void.class)) {
       value = null;
     } else if (clazz.equals(List.class)) {
-      value = (T) LASJsonParser.asList(params.toString());
+      value = (T) MLJsonParser.asList(params.toString());
     } else if (clazz.equals(Map.class)) {
-      value = (T) LASJsonParser.asMap(params.toString());
+      value = (T) MLJsonParser.asMap(params.toString());
     } else {
       try {
-        value = LASJsonParser.asObject(params.toString(), clazz);
+        value = MLJsonParser.asObject(params.toString(), clazz);
       } catch (Exception e) {
         throw new IllegalArgumentException("can not convert parameter to Java Object. " + params, e);
       }

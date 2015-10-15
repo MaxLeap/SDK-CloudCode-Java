@@ -11,20 +11,20 @@ import java.util.Map;
 /**
  * Created by shunlv on 15-7-2.
  */
-public class ReceiptRegularLASClassManager extends AssistLASClassManagerImpl<ReceiptRegular> {
-  private static final Logger LOGGER = LoggerFactory.getLogger(ReceiptRegularLASClassManager.class);
+public class ReceiptRegularMLClassManager extends AssistMLClassManagerImpl<ReceiptRegular> {
+  private static final Logger LOGGER = LoggerFactory.getLogger(ReceiptRegularMLClassManager.class);
 
-  public ReceiptRegularLASClassManager(Class<ReceiptRegular> receiptRegularClass) {
+  public ReceiptRegularMLClassManager(Class<ReceiptRegular> receiptRegularClass) {
     super(receiptRegularClass);
   }
 
   public Map transaction(String id, Map receiptInfo, UserPrincipal userPrincipal) {
     try {
-      String response = WebUtils.doPost(apiAddress + "/" + id + "/trans", CloudCodeContants.getHeaders(userPrincipal), LASJsonParser.asJson(receiptInfo), CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
+      String response = WebUtils.doPost(apiAddress + "/" + id + "/trans", CloudCodeContants.getHeaders(userPrincipal), MLJsonParser.asJson(receiptInfo), CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
       LOGGER.info("get response of transaction[" + apiAddress + "/" + id + "/trans]:" + response);
-      return LASJsonParser.asMap(response);
+      return MLJsonParser.asMap(response);
     } catch (Exception e) {
-      throw new LASException(e);
+      throw new MLException(e);
     }
   }
 

@@ -7,16 +7,16 @@ import org.junit.Test;
 /**
  * Created by stream.
  */
-public class ZLoaderTest {
+public class MLLoaderTest {
 
   private static class MyLoader extends LoaderBase implements Loader {
     @Override
     public void main(GlobalConfig config) {
-      defineFunction("hello", new LASHandler<LASRequest, LASResponse<String>>() {
+      defineFunction("hello", new MLHandler<MLRequest, MLResponse<String>>() {
         @Override
-        public LASResponse<String> handle(LASRequest request) {
+        public MLResponse<String> handle(MLRequest request) {
           Assert.assertNotNull(request);
-          return new LASResponse<String>(String.class);
+          return new MLResponse<String>(String.class);
         }
       });
     }
@@ -27,8 +27,8 @@ public class ZLoaderTest {
     Loader loader = new MyLoader();
     loader.main(null);
     Assert.assertEquals(3, loader.definers().size());
-    LASHandler<Request, Response> handler = loader.definers().get(RequestCategory.FUNCTION.alias()).getHandler("hello");
-    Assert.assertNotNull(handler.handle(new LASRequest(null, null)));
+    MLHandler<Request, Response> handler = loader.definers().get(RequestCategory.FUNCTION.alias()).getHandler("hello");
+    Assert.assertNotNull(handler.handle(new MLRequest(null, null)));
   }
 
 }

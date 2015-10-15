@@ -1,7 +1,7 @@
 package com.maxleap.code.impl;
 
 import com.maxleap.code.CloudCodeContants;
-import com.maxleap.code.LASException;
+import com.maxleap.code.MLException;
 import com.maxleap.code.Logger;
 import com.maxleap.code.LoggerFactory;
 import com.maxleap.code.assist.Path;
@@ -26,14 +26,14 @@ public class PushMsg extends PushMsgBuilder {
 
   @Override
   public void push() {
-    if (this.criteria == null) throw new LASException("your criteria must not be empty");
-    if (this.data == null) throw new LASException("your message must not be empty");
+    if (this.criteria == null) throw new MLException("your criteria must not be empty");
+    if (this.data == null) throw new MLException("your message must not be empty");
     if (this.message == null) super.build();
     try {
       String response = WebUtils.doPost(apiAddress, CloudCodeContants.getHeaders(null), message, CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
       LOGGER.info("get response of push[" + apiAddress + "]:" + response);
     } catch (IOException e) {
-      throw new LASException(e);
+      throw new MLException(e);
     }
   }
 

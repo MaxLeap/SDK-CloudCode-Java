@@ -3,8 +3,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.maxleap</groupId>
-  <artifactId>LAS-cloudcode-sdk</artifactId>
-  <version>2.4.0-SNAPSHOT</version>
+  <artifactId>ML-cloudcode-sdk</artifactId>
+  <version>2.4.1-SNAPSHOT</version>
   <name>Cloud code java sdk - Parent Project</name>
   <packaging>pom</packaging>
 
@@ -20,7 +20,7 @@
     <module>cloud-code-test</module>
   </modules>
 
-  <url>https://github.com/LeapAppServices/LAS-SDK-CloudCode-Java</url>
+  <url>https://github.com/LeapAppServices/ML-SDK-CloudCode-Java</url>
 	<description>Leap.as cloud code Java API</description>
 	
   <licenses>
@@ -51,7 +51,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <las-sdk-data-api.version>3.1.0</las-sdk-data-api.version>
+    <las-sdk-data-api.version>3.2.0</las-sdk-data-api.version>
     <jackson.version>2.5.3</jackson.version>
     <junit.version>4.11</junit.version>
     <mockito.version>1.9.5</mockito.version>
@@ -59,8 +59,8 @@
   </properties>
 
   <scm>
-    <connection>scm:git:https://github.com/LeapAppServices/LAS-SDK-CloudCode-Java.git</connection>
-    <developerConnection>scm:git:https://github.com/LeapAppServices/LAS-SDK-CloudCode-Java.git</developerConnection>
+    <connection>scm:git:https://github.com/LeapAppServices/ML-SDK-CloudCode-Java.git</connection>
+    <developerConnection>scm:git:https://github.com/LeapAppServices/ML-SDK-CloudCode-Java.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
 
@@ -131,7 +131,6 @@
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>${junit.version}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.mockito</groupId>

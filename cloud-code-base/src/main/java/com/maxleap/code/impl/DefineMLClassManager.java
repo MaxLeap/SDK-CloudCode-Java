@@ -6,9 +6,9 @@ import com.maxleap.code.Definer;
 /**
  *
  */
-public class DefineLASClassManager extends AbstractDefiner implements Definer {
+public class DefineMLClassManager extends AbstractDefiner implements Definer {
 
-  public DefineLASClassManager() {
+  public DefineMLClassManager() {
     category = RequestCategory.EntityManager;
   }
 

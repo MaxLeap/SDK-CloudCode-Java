@@ -11,34 +11,35 @@ import java.util.Map;
 /**
  *
  */
-public abstract class TestCloudCode {
+public class TestCloudCode {
 
   private static final Logger logger = LoggerFactory.getLogger(TestCloudCode.class);
   private BootstrapCloudCode bootstrapCloudCode;
 
-  protected TestCloudCode() throws Exception{
+  public TestCloudCode() {
     this.bootstrapCloudCode = new BootstrapCloudCode();
     this.bootstrapCloudCode.start();
   }
 
-  protected TestCloudCode(String restAddr) throws Exception{
+  public TestCloudCode(String restAddr) throws Exception {
     this.bootstrapCloudCode = new BootstrapCloudCode();
     bootstrapCloudCode.setRestAddr(restAddr);
     this.bootstrapCloudCode.start();
   }
 
-  protected Response runFunction(String name, String params){
-    return this.runFunction(name,params,null);
+
+  public Response runFunction(String name, String params) {
+    return this.runFunction(name, params, null);
   }
 
   protected Response runFunction(String name, String params, UserPrincipal userPrincipal) {
-    Request request = new LASRequest(params,userPrincipal);
+    Request request = new MLRequest(params, userPrincipal);
     Response response = null;
     Definer definer = bootstrapCloudCode.getLoader().definers().get(RequestCategory.FUNCTION.alias());
     if (definer == null) {
       System.err.println("doesn't exist function definer");
     } else {
-      LASHandler<Request, Response> handler = definer.getHandler(name);
+      MLHandler<Request, Response> handler = definer.getHandler(name);
       if (handler != null) {
         try {
           response = handler.handle(request);
@@ -52,7 +53,7 @@ public abstract class TestCloudCode {
           }
         }
       } else {
-        response = new LASResponse(String.class);
+        response = new MLResponse(String.class);
         response.setError("function " + name + " undefined.");
         System.err.println("function " + name + " undefined.");
       }
@@ -61,16 +62,16 @@ public abstract class TestCloudCode {
   }
 
   protected void runJob(String name, String params) {
-    this.runJob(name,params,null);
+    this.runJob(name, params, null);
   }
 
   protected void runJob(String name, String params, UserPrincipal userPrincipal) {
-    Request request = new LASRequest(params,userPrincipal);
+    Request request = new MLRequest(params, userPrincipal);
     Definer definer = bootstrapCloudCode.getLoader().definers().get(RequestCategory.JOB.alias());
     if (definer == null) {
       logger.error("doesn't exist job definer");
     } else {
-      LASHandler<Request, Response> handler = definer.getHandler(name);
+      MLHandler<Request, Response> handler = definer.getHandler(name);
       if (handler != null) {
         final JobRunner jobRunner = new JobRunner(handler, request);
         jobRunner.start();
@@ -90,14 +91,14 @@ public abstract class TestCloudCode {
   }
 
   protected <T> Response runEntityHook(String managerName, DataAccessMethod method, T object) throws Exception {
-    LASClassManagerHandler entityManagerHandler = bootstrapCloudCode.getClassesManagerHandler(managerName);
-    JsonNode params = LASJsonParser.asJsonNode(object);
+    MLClassManagerHandler entityManagerHandler = bootstrapCloudCode.getClassesManagerHandler(managerName);
+    JsonNode params = MLJsonParser.asJsonNode(object);
 
     Map<String, Object> requestParams = new HashMap<String, Object>();
     requestParams.put("params", params);
     requestParams.put("method", method == DataAccessMethod.FINDBYID ? "findById" : method.name().toLowerCase());
 
-    LASClassManagerRequest request = LASJsonParser.asObject(LASJsonParser.asJson(requestParams),LASClassManagerRequest.class);
+    MLClassManagerRequest request = MLJsonParser.asObject(MLJsonParser.asJson(requestParams), MLClassManagerRequest.class);
     Response response = entityManagerHandler.handle(request);
     return response;
   }

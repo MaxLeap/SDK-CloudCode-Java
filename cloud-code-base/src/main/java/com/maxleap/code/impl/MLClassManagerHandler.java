@@ -6,24 +6,24 @@ import com.maxleap.code.*;
 /**
  * Handler for entity request.
  */
-public final class LASClassManagerHandler<T> implements LASHandler<LASClassManagerRequest, Response> {
+public final class MLClassManagerHandler<T> implements MLHandler<MLClassManagerRequest, Response> {
 
-  private static final Logger logger = LoggerFactory.getLogger(LASClassManagerHandler.class);
+  private static final Logger logger = LoggerFactory.getLogger(MLClassManagerHandler.class);
 
-  private final LASClassManager<T> entityManager;
+  private final MLClassManager<T> entityManager;
   private final Class<T> entityClazz;
 
-  public LASClassManagerHandler(LASClassManager<T> entityManager, Class<T> entityClazz) {
+  public MLClassManagerHandler(MLClassManager<T> entityManager, Class<T> entityClazz) {
     this.entityManager = entityManager;
     this.entityClazz = entityClazz;
   }
 
   @Override
-  public Response handle(LASClassManagerRequest request) {
+  public Response handle(MLClassManagerRequest request) {
     switch (request.getMethodName()) {
       case CREATE:
-        LASClassManagerRequest.LASClassManagerCreateRequest<T> createRequest = request.asCreateRequest(entityClazz);
-        Response<SaveMsg> createResponse = new LASResponse(SaveMsg.class);
+        MLClassManagerRequest.MLClassManagerCreateRequest<T> createRequest = request.asCreateRequest(entityClazz);
+        Response<SaveMsg> createResponse = new MLResponse(SaveMsg.class);
         try {
           SaveResult saveResult = entityManager.create(createRequest.getEntity(), request.getUserPrincipal());
           if (saveResult.isSuccess()) {
@@ -36,8 +36,8 @@ public final class LASClassManagerHandler<T> implements LASHandler<LASClassManag
         }
         return createResponse;
       case UPDATE:
-        LASClassManagerRequest.LASClassManagerUpdateRequest updateRequest = request.asUpdateRequest();
-        Response<UpdateMsg> updateResponse = new LASResponse<UpdateMsg>(UpdateMsg.class);
+        MLClassManagerRequest.MLClassManagerUpdateRequest updateRequest = request.asUpdateRequest();
+        Response<UpdateMsg> updateResponse = new MLResponse<UpdateMsg>(UpdateMsg.class);
         try {
           UpdateMsg updateMsg = entityManager.update(updateRequest.getObjectId(), updateRequest.lasUpdate(), request.getUserPrincipal());
           updateResponse.setResult(updateMsg);
@@ -47,8 +47,8 @@ public final class LASClassManagerHandler<T> implements LASHandler<LASClassManag
         }
         return updateResponse;
       case DELETE:
-        LASClassManagerRequest.LASClassManagerDeleteRequest deleteRequest = request.asDeleteRequest();
-        Response<DeleteMsg> deleteResponse = new LASResponse(DeleteMsg.class);
+        MLClassManagerRequest.MLClassManagerDeleteRequest deleteRequest = request.asDeleteRequest();
+        Response<DeleteMsg> deleteResponse = new MLResponse(DeleteMsg.class);
         try {
           DeleteResult deleteResult = entityManager.delete(deleteRequest.getObjectId(), request.getUserPrincipal());
           if (deleteResult.isSuccess()) {
@@ -62,8 +62,8 @@ public final class LASClassManagerHandler<T> implements LASHandler<LASClassManag
         }
         return deleteResponse;
       case DELETEBATCH:
-        LASClassManagerRequest.LASClassManagerDeleteBatchRequest deleteBatchRequest = request.asDeleteBatchRequest();
-        Response<DeleteMsg> deleteBatchResponse = new LASResponse(DeleteMsg.class);
+        MLClassManagerRequest.MLClassManagerDeleteBatchRequest deleteBatchRequest = request.asDeleteBatchRequest();
+        Response<DeleteMsg> deleteBatchResponse = new MLResponse(DeleteMsg.class);
         try {
           DeleteResult deleteResult = entityManager.delete(deleteBatchRequest.getObjectIds(), request.getUserPrincipal());
           deleteBatchResponse.setResult(deleteResult.getDeleteMessage());

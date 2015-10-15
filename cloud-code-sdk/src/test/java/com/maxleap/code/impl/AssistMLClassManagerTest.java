@@ -1,7 +1,7 @@
 package com.maxleap.code.impl;
 
 import com.maxleap.code.CloudCodeContants;
-import com.maxleap.code.assist.AssistLASClassManager;
+import com.maxleap.code.assist.AssistMLClassManager;
 import com.maxleap.code.assist.classes.Coin;
 import com.maxleap.las.sdk.*;
 import org.junit.Assert;
@@ -12,7 +12,7 @@ import org.junit.Test;
  * User：poplar
  * Date：15-6-3
  */
-public class AssistLASClassManagerTest {
+public class AssistMLClassManagerTest {
 
   @Before
   public void before() {
@@ -21,7 +21,7 @@ public class AssistLASClassManagerTest {
 
   @Test
   public void baseOperatorLifeCycleTest() {
-    AssistLASClassManager<Coin> coinService = new AssistLASClassManagerImpl<Coin>(Coin.class);
+    AssistMLClassManager<Coin> coinService = new AssistMLClassManagerImpl<Coin>(Coin.class);
     //create
     Coin coin = new Coin();
     coin.setDesc("mytestDesc");
@@ -35,12 +35,12 @@ public class AssistLASClassManagerTest {
     //findById
     Coin coin2 = coinService.findById(saveMsg.objectIdString());
     Assert.assertNotNull(coin2);
-    System.out.println(LASJsonParser.asJson(coin2));
+    System.out.println(MLJsonParser.asJson(coin2));
     Assert.assertEquals("mytest", coin2.getName());
     Assert.assertEquals("mytestDesc", coin2.getDesc());
 
     //update
-    LASUpdate update = LASUpdate.getUpdate();
+    MLUpdate update = MLUpdate.getUpdate();
     update.set("name", "mytest_new");
     update.set("desc", "mytestDesc_new");
     UpdateMsg updateMsg = coinService.update(saveMsg.objectIdString(), update);
@@ -49,7 +49,7 @@ public class AssistLASClassManagerTest {
     Assert.assertTrue(updateMsg.number() == 1);
 
     //find
-    LASQuery lasQuery = LASQuery.instance();
+    MLQuery lasQuery = MLQuery.instance();
     lasQuery.equalTo("name", "mytest_new");
     FindMsg<Coin> coinFindMsg = coinService.find(lasQuery);
     Assert.assertNotNull(coinFindMsg);

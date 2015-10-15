@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.maxleap.code.LASException;
+import com.maxleap.code.MLException;
 
 import java.io.IOException;
 import java.util.*;
@@ -14,107 +14,107 @@ import java.util.*;
 /**
  *
  */
-public class LASClassManagerImpl<T> implements LASClassManager<T> {
+public class MLClassManagerImpl<T> implements MLClassManager<T> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(LASClassManagerImpl.class);
-  private LASClassManagerHook<T> hook;
+  private static final Logger LOGGER = LoggerFactory.getLogger(MLClassManagerImpl.class);
+  private MLClassManagerHook<T> hook;
   private Class<T> entityClazz;
   private String apiAddress;
 
-  public LASClassManagerImpl(LASClassManagerHook<T> hook, Class<T> entityClazz) {
+  public MLClassManagerImpl(MLClassManagerHook<T> hook, Class<T> entityClazz) {
     this.hook = hook;
     this.entityClazz = entityClazz;
     this.apiAddress = CloudCodeContants.DEFAULT_API_ADDRESS_PREFIX + "/classes/" + entityClazz.getSimpleName();
   }
 
   @Override
-  public SaveResult<T> create(T object, UserPrincipal userPrincipal) throws LASException {
+  public SaveResult<T> create(T object, UserPrincipal userPrincipal) throws MLException {
     try {
       BeforeResult<T> beforeResult = hook == null ? new BeforeResult<T>(object, true) : hook.beforeCreate(object, userPrincipal);
       if (!beforeResult.isResult()) return new SaveResult<T>(beforeResult.getFailMessage());
-      String response = WebUtils.doPost(apiAddress, CloudCodeContants.getHeaders(userPrincipal), LASJsonParser.asJson(object), CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
+      String response = WebUtils.doPost(apiAddress, CloudCodeContants.getHeaders(userPrincipal), MLJsonParser.asJson(object), CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
       LOGGER.info("get response of create[" + apiAddress + "]:" + response);
-      SaveMsg saveMsg = LASJsonParser.asObject(response, SaveMsg.class);
+      SaveMsg saveMsg = MLJsonParser.asObject(response, SaveMsg.class);
       SaveResult saveResult = new SaveResult<T>(beforeResult, saveMsg);
       if (hook == null) return saveResult;
       AfterResult afterResult = hook.afterCreate(beforeResult, saveMsg, userPrincipal);
       if (!afterResult.isSuccess()) saveResult.setFailMessage(afterResult.getFailMessage());
       return saveResult;
     } catch (Exception e) {
-      throw new LASException(e);
+      throw new MLException(e);
     }
   }
 
   @Override
-  public FindMsg<T> find(LASQuery query, UserPrincipal userPrincipal) {
+  public FindMsg<T> find(MLQuery query, UserPrincipal userPrincipal) {
     return find(query, false, userPrincipal);
   }
 
   @Override
-  public FindMsg<T> find(LASQuery query, boolean count, UserPrincipal userPrincipal) throws LASException {
+  public FindMsg<T> find(MLQuery query, boolean count, UserPrincipal userPrincipal) throws MLException {
     try {
       String postQuery = serializeLasQueryForPostQuest(query);
       String response = WebUtils.doPost(apiAddress + "/query", CloudCodeContants.getHeaders(userPrincipal), postQuery, CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
       LOGGER.info("get response of find[" + apiAddress + "/query](" + postQuery + "):" + response);
-      JsonNode responseJson = LASJsonParser.asJsonNode(response);
+      JsonNode responseJson = MLJsonParser.asJsonNode(response);
       ArrayNode results = (ArrayNode) responseJson.get("results");
       List<T> r = new ArrayList<T>();
       if (results == null || results.size() == 0) return new FindMsg<T>();
       for (JsonNode result : results) {
-        r.add(LASJsonParser.asObject(result.toString(), entityClazz));
+        r.add(MLJsonParser.asObject(result.toString(), entityClazz));
       }
       return new FindMsg<T>(count ? results.size() : 0, r);
     } catch (Exception e) {
-      throw new LASException(e);
+      throw new MLException(e);
     }
   }
 
   @Override
-  public T findById(String id, UserPrincipal userPrincipal) throws LASException {
+  public T findById(String id, UserPrincipal userPrincipal) throws MLException {
     try {
       String response = WebUtils.doGet(apiAddress + "/" + id, CloudCodeContants.getHeaders(userPrincipal), null);
       LOGGER.info("get response of findById[" + apiAddress + "/" + id + "]:" + response);
       if ("{}".equals(response)) return null;
-      return LASJsonParser.asObject(response, entityClazz);
+      return MLJsonParser.asObject(response, entityClazz);
     } catch (IOException e) {
-      throw new LASException(e);
+      throw new MLException(e);
     }
   }
 
   @Override
-  public UpdateMsg update(String id, LASUpdate update, UserPrincipal userPrincipal) throws LASException {
+  public UpdateMsg update(String id, MLUpdate update, UserPrincipal userPrincipal) throws MLException {
     try {
-      String response = WebUtils.doPut(apiAddress + "/" + id, CloudCodeContants.getHeaders(userPrincipal), LASJsonParser.asJson(update.update()), CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
+      String response = WebUtils.doPut(apiAddress + "/" + id, CloudCodeContants.getHeaders(userPrincipal), MLJsonParser.asJson(update.update()), CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
       LOGGER.info("get response of update[" + apiAddress + "/" + id + "](" + update.update() + "):" + response);
-      UpdateMsg updateMsg = LASJsonParser.asObject(response, UpdateMsg.class);
+      UpdateMsg updateMsg = MLJsonParser.asObject(response, UpdateMsg.class);
       if (hook != null) hook.afterUpdate(id, updateMsg, userPrincipal);
       return updateMsg;
     } catch (IOException e) {
-      throw new LASException(e);
+      throw new MLException(e);
     }
   }
 
   @Override
-  public DeleteResult delete(String id, UserPrincipal userPrincipal) throws LASException {
+  public DeleteResult delete(String id, UserPrincipal userPrincipal) throws MLException {
     BeforeResult<String> beforeResult = hook == null ? new BeforeResult<String>(id, true) : hook.beforeDelete(id, userPrincipal);
     if (!beforeResult.isResult()) return new DeleteResult(beforeResult.getFailMessage());
     try {
       String response = WebUtils.doDelete(apiAddress + "/" + id, CloudCodeContants.getHeaders(userPrincipal), null);
       LOGGER.info("get response of delete[" + apiAddress + "/" + id + "]:" + response);
-      DeleteMsg deleteMsg = LASJsonParser.asObject(response, DeleteMsg.class);
+      DeleteMsg deleteMsg = MLJsonParser.asObject(response, DeleteMsg.class);
       DeleteResult deleteResult = new DeleteResult(beforeResult, deleteMsg);
       if (hook == null) return deleteResult;
       AfterResult afterResult = hook.afterDelete(beforeResult, deleteMsg, userPrincipal);
       if (!afterResult.isSuccess()) deleteResult.setFailMessage(afterResult.getFailMessage());
       return deleteResult;
     } catch (Exception e) {
-      throw new LASException(e);
+      throw new MLException(e);
     }
   }
 
   @Override
   public DeleteResult delete(String[] ids, UserPrincipal userPrincipal) {
-    if (ids != null && ids.length > 50) throw new LASException("delete bach max limit 50.");
+    if (ids != null && ids.length > 50) throw new MLException("delete bach max limit 50.");
     try {
       BeforeResult<String[]> beforeResult = hook == null ? new BeforeResult<String[]>(ids, true) : hook.beforeDelete(ids, userPrincipal);
       if (!beforeResult.isResult()) return new DeleteResult(beforeResult.getFailMessage());
@@ -124,57 +124,57 @@ public class LASClassManagerImpl<T> implements LASClassManager<T> {
       params.put("objectIds", arrays);
       String response = WebUtils.doPost(apiAddress + "/delete", CloudCodeContants.getHeaders(userPrincipal), params.toString(), CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
       LOGGER.info("get response of deleteBatch[" + apiAddress + "/delete](" + ids + "):" + response);
-      return new DeleteResult<String[]>(beforeResult, LASJsonParser.asObject(response, DeleteMsg.class));
+      return new DeleteResult<String[]>(beforeResult, MLJsonParser.asObject(response, DeleteMsg.class));
     } catch (Exception e) {
-      throw new LASException(e);
+      throw new MLException(e);
     }
   }
 
   @Override
-  public SaveResult<T> create(T object) throws LASException {
+  public SaveResult<T> create(T object) throws MLException {
     return this.create(object, null);
   }
 
   @Override
-  public FindMsg<T> find(LASQuery query) throws LASException {
+  public FindMsg<T> find(MLQuery query) throws MLException {
     return this.find(query, null);
   }
 
   @Override
-  public FindMsg<T> find(LASQuery query, boolean count) throws LASException {
+  public FindMsg<T> find(MLQuery query, boolean count) throws MLException {
     return this.find(query, count, null);
   }
 
   @Override
-  public T findById(String id) throws LASException {
+  public T findById(String id) throws MLException {
     return this.findById(id, null);
   }
 
   @Override
-  public UpdateMsg update(String id, LASUpdate update) throws LASException {
+  public UpdateMsg update(String id, MLUpdate update) throws MLException {
     return this.update(id, update, null);
   }
 
   @Override
-  public DeleteResult delete(String id) throws LASException {
+  public DeleteResult delete(String id) throws MLException {
     return this.delete(id, null);
   }
 
   @Override
-  public DeleteResult delete(String[] ids) throws LASException {
+  public DeleteResult delete(String[] ids) throws MLException {
     return this.delete(ids, null);
   }
 
-  String serializeLasQueryForPostQuest(LASQuery lasQuery) {
+  String serializeLasQueryForPostQuest(MLQuery lasQuery) {
     Map<String, Object> map = new HashMap<String, Object>();
-    if (lasQuery.query() != null) map.put("where", LASJsonParser.asJson(lasQuery.query()));
+    if (lasQuery.query() != null) map.put("where", MLJsonParser.asJson(lasQuery.query()));
     if (lasQuery.sort() != null) map.put("order", lasQuery.sort());
     if (lasQuery.keys() != null) map.put("keys", lasQuery.keys());
     if (lasQuery.includes() != null) map.put("include", lasQuery.includes());
     map.put("limit", lasQuery.limit());
     map.put("skip", lasQuery.skip());
 //    map.put("excludeKeys", null); Unsupported.
-    return LASJsonParser.asJson(map);
+    return MLJsonParser.asJson(map);
   }
 
 }

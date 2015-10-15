@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.maxleap.code.LASException;
+import com.maxleap.code.MLException;
 
 import java.io.IOException;
 import java.util.*;
@@ -15,7 +15,7 @@ import java.util.*;
 /**
  * Created by stream.
  */
-public abstract class LASJsonParser {
+public abstract class MLJsonParser {
 
   private static final ObjectMapper mapper = new ObjectMapper();
   private static final TypeFactory typeFactory = TypeFactory.defaultInstance();
@@ -31,7 +31,7 @@ public abstract class LASJsonParser {
     try {
       return mapper.readValue(source, typeFactory.uncheckedSimpleType(clazz));
     } catch (IOException e) {
-      throw new LASException(e);
+      throw new MLException(e);
     }
   }
 
@@ -39,7 +39,7 @@ public abstract class LASJsonParser {
     try {
       return mapper.readValue(source, type);
     } catch (IOException e) {
-      throw new LASException(e);
+      throw new MLException(e);
     }
   }
 
@@ -47,7 +47,7 @@ public abstract class LASJsonParser {
     try {
       return mapper.readTree(source);
     } catch (IOException e) {
-      throw new LASException(e);
+      throw new MLException(e);
     }
   }
 
@@ -61,7 +61,7 @@ public abstract class LASJsonParser {
       String jsonStr = mapper.writeValueAsString(object);
       return mapper.readValue(jsonStr, Map.class);
     } catch (Exception e) {
-      throw new LASException(e);
+      throw new MLException(e);
     }
   }
 
@@ -81,7 +81,7 @@ public abstract class LASJsonParser {
     try {
       return mapper.writeValueAsString(obj);
     } catch (JsonProcessingException e) {
-      throw new LASException(e);
+      throw new MLException(e);
     }
   }
 }
