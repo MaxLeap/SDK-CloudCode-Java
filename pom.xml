@@ -20,7 +20,7 @@
     <module>cloud-code-test</module>
   </modules>
 
-  <url>https://github.com/LeapAppServices/ML-SDK-CloudCode-Java</url>
+  <url>https://github.com/MaxLeap/SDK-CloudCode-Java</url>
 	<description>Leap.as cloud code Java API</description>
 	
   <licenses>
@@ -59,8 +59,8 @@
   </properties>
 
   <scm>
-    <connection>scm:git:https://github.com/LeapAppServices/ML-SDK-CloudCode-Java.git</connection>
-    <developerConnection>scm:git:https://github.com/LeapAppServices/ML-SDK-CloudCode-Java.git</developerConnection>
+    <connection>scm:git:https://github.com/MaxLeap/SDK-CloudCode-Java.git</connection>
+    <developerConnection>scm:git:https://github.com/MaxLeap/SDK-CloudCode-Java.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
 
