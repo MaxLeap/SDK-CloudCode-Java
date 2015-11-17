@@ -4,7 +4,7 @@
 
   <groupId>com.maxleap</groupId>
   <artifactId>ML-cloudcode-sdk</artifactId>
-  <version>2.4.4-SNAPSHOT</version>
+  <version>2.4.3-SNAPSHOT</version>
   <name>Cloud code java sdk - Parent Project</name>
   <packaging>pom</packaging>
 
