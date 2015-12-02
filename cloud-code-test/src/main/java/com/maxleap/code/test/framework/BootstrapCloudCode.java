@@ -19,7 +19,7 @@ import java.util.jar.JarFile;
 /**
  *
  */
-class BootstrapCloudCode {
+public class BootstrapCloudCode {
 
   private GlobalConfig globalConfig;
   private static final Logger logger = LoggerFactory.getLogger(BootstrapCloudCode.class);
@@ -40,7 +40,7 @@ class BootstrapCloudCode {
     CloudCodeContants.DEFAULT_API_ADDRESS_PREFIX = restAddr;
   }
 
-  protected void start() {
+  public void start() {
     //load hook and manager
     loadHookAndManager();
     cacheClasses();

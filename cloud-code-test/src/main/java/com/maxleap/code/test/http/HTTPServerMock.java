@@ -1,5 +1,7 @@
 package com.maxleap.code.test.http;
 
+import com.maxleap.code.Response;
+import com.maxleap.code.test.framework.TestCloudCode;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -17,35 +19,70 @@ public class HTTPServerMock {
 
   public static void main(String[] args) throws Exception {
     //初始化cloudcode main
+    TestCloudCode testCloudCode  = new TestCloudCode();
 
     Server server = new Server(8081);
     ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
     context.setContextPath("/");
     server.setHandler(context);
 
-    context.addServlet(new ServletHolder(new HelloServlet()), "/*");
-    context.addServlet(new ServletHolder(new HelloServlet("Buongiorno Mondo")), "/it/*");
-    context.addServlet(new ServletHolder(new HelloServlet("Bonjour le Monde")), "/fr/*");
+    context.addServlet(new ServletHolder(new FunctionServlet(testCloudCode)), "/functions/*");
+    context.addServlet(new ServletHolder(new JobServlet(testCloudCode)), "/jobs/*");
 
     server.start();
     server.join();
   }
 
-  private static class HelloServlet extends HttpServlet {
-    private String greeting = "Hello World";
+  private static class FunctionServlet extends HttpServlet {
+    private TestCloudCode testCloudCode;
 
-    public HelloServlet() {
-    }
-
-    public HelloServlet(String greeting) {
-      this.greeting = greeting;
+    public FunctionServlet(TestCloudCode testCloudCode) {
+      this.testCloudCode = testCloudCode;
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      this.doGet(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse response) throws ServletException, IOException {
+      StringBuilder sb = new StringBuilder();
+      String s;
+      while (( s = req.getReader().readLine()) != null) sb.append(s);
+
       response.setContentType("text/html");
       response.setStatus(HttpServletResponse.SC_OK);
-      response.getWriter().println("<h1>" + greeting + "</h1>");
-      //接收到请求后直接调用相关 function handler
+      String name = req.getPathInfo().split("/")[1];
+
+      Response result = testCloudCode.runFunction(name,sb.toString());
+      if (result.succeeded()) response.getWriter().println(result.getResult());
+      else response.sendError(404,result.getError());
+    }
+  }
+
+  private static class JobServlet extends HttpServlet {
+    private TestCloudCode testCloudCode;
+
+    public JobServlet(TestCloudCode testCloudCode) {
+      this.testCloudCode = testCloudCode;
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      this.doGet(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse response) throws ServletException, IOException {
+      StringBuilder sb = new StringBuilder();
+      String s;
+      while (( s = req.getReader().readLine()) != null) sb.append(s);
+
+      response.setContentType("text/html");
+      response.setStatus(HttpServletResponse.SC_OK);
+      String name = req.getPathInfo().split("/")[1];
+
+      testCloudCode.runJob(name, sb.toString());
+      response.getWriter().println("ok");
     }
   }
 

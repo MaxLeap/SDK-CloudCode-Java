@@ -61,7 +61,7 @@ public class TestCloudCode {
     return response;
   }
 
-  protected void runJob(String name, String params) {
+  public void runJob(String name, String params) {
     this.runJob(name, params, null);
   }
 
