@@ -17,11 +17,12 @@ import java.io.IOException;
  */
 public class HTTPServerMock {
 
-  public static void main(String[] args) throws Exception {
-    //初始化cloudcode main
-    TestCloudCode testCloudCode  = new TestCloudCode();
+  public HTTPServerMock(TestCloudCode testCloudCode) throws Exception {
+    this(8085, testCloudCode);
+  }
 
-    Server server = new Server(8081);
+  public HTTPServerMock(int port, TestCloudCode testCloudCode) throws Exception {
+    Server server = new Server(port);
     ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
     context.setContextPath("/");
     server.setHandler(context);
@@ -30,10 +31,11 @@ public class HTTPServerMock {
     context.addServlet(new ServletHolder(new JobServlet(testCloudCode)), "/jobs/*");
 
     server.start();
+    System.out.println("http server have startup on port " + port);
     server.join();
   }
 
-  private static class FunctionServlet extends HttpServlet {
+  private class FunctionServlet extends HttpServlet {
     private TestCloudCode testCloudCode;
 
     public FunctionServlet(TestCloudCode testCloudCode) {
@@ -48,19 +50,19 @@ public class HTTPServerMock {
     protected void doPost(HttpServletRequest req, HttpServletResponse response) throws ServletException, IOException {
       StringBuilder sb = new StringBuilder();
       String s;
-      while (( s = req.getReader().readLine()) != null) sb.append(s);
+      while ((s = req.getReader().readLine()) != null) sb.append(s);
 
       response.setContentType("text/html");
       response.setStatus(HttpServletResponse.SC_OK);
       String name = req.getPathInfo().split("/")[1];
 
-      Response result = testCloudCode.runFunction(name,sb.toString());
+      Response result = testCloudCode.runFunction(name, sb.toString());
       if (result.succeeded()) response.getWriter().println(result.getResult());
-      else response.sendError(404,result.getError());
+      else response.sendError(404, result.getError());
     }
   }
 
-  private static class JobServlet extends HttpServlet {
+  private class JobServlet extends HttpServlet {
     private TestCloudCode testCloudCode;
 
     public JobServlet(TestCloudCode testCloudCode) {
@@ -75,7 +77,7 @@ public class HTTPServerMock {
     protected void doPost(HttpServletRequest req, HttpServletResponse response) throws ServletException, IOException {
       StringBuilder sb = new StringBuilder();
       String s;
-      while (( s = req.getReader().readLine()) != null) sb.append(s);
+      while ((s = req.getReader().readLine()) != null) sb.append(s);
 
       response.setContentType("text/html");
       response.setStatus(HttpServletResponse.SC_OK);

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.maxleap</groupId>
@@ -21,8 +22,8 @@
   </modules>
 
   <url>https://github.com/MaxLeap/SDK-CloudCode-Java</url>
-	<description>Leap.as cloud code Java API</description>
-	
+  <description>Leap.as cloud code Java API</description>
+
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
@@ -30,7 +31,7 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-  
+
   <developers>
     <developer>
       <id>sdyy321</id>
@@ -53,6 +54,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <las-sdk-data-api.version>3.2.2</las-sdk-data-api.version>
     <jackson.version>2.5.3</jackson.version>
+    <jetty.version>8.1.18.v20150929</jetty.version>
     <junit.version>4.11</junit.version>
     <mockito.version>1.9.5</mockito.version>
     <metrics.version>3.0.2</metrics.version>
