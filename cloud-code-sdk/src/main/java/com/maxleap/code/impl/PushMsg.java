@@ -26,7 +26,6 @@ public class PushMsg extends PushMsgBuilder {
 
   @Override
   public void push() {
-    if (this.criteria == null) throw new MLException("your criteria must not be empty");
     if (this.data == null) throw new MLException("your message must not be empty");
     if (this.message == null) super.build();
     try {

@@ -58,7 +58,9 @@ public abstract class PushMsgBuilder {
    */
   protected PushMsgBuilder build() {
     ObjectNode result = JsonNodeFactory.instance.objectNode();
-    result.put("criteria", criteria);
+    if (criteria != null) {
+      result.put("criteria", criteria);
+    }
     ObjectNode A = JsonNodeFactory.instance.objectNode();
     ObjectNode msg = JsonNodeFactory.instance.objectNode();
     msg.put("data", data);
