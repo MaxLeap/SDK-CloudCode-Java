@@ -26,12 +26,11 @@ public class PushMsg extends PushMsgBuilder {
 
   @Override
   public void push() {
-    if (this.criteria == null) throw new MLException("your criteria must not be empty");
     if (this.data == null) throw new MLException("your message must not be empty");
     if (this.message == null) super.build();
     try {
       String response = WebUtils.doPost(apiAddress, CloudCodeContants.getHeaders(null), message, CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
-      LOGGER.info("get response of push[" + apiAddress + "]:" + response);
+      LOGGER.info("get response of push[" + apiAddress + "]("+message+"):" + response);
     } catch (IOException e) {
       throw new MLException(e);
     }
