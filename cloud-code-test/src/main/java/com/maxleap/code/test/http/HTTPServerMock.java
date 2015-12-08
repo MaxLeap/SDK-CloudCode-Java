@@ -43,7 +43,7 @@ public class HTTPServerMock {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-      this.doGet(request, response);
+      this.doPost(request, response);
     }
 
     @Override
@@ -52,7 +52,6 @@ public class HTTPServerMock {
       String s;
       while ((s = req.getReader().readLine()) != null) sb.append(s);
 
-      response.setContentType("text/html");
       response.setStatus(HttpServletResponse.SC_OK);
       String name = req.getPathInfo().split("/")[1];
 
@@ -70,7 +69,7 @@ public class HTTPServerMock {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-      this.doGet(request, response);
+      this.doPost(request, response);
     }
 
     @Override
@@ -79,7 +78,6 @@ public class HTTPServerMock {
       String s;
       while ((s = req.getReader().readLine()) != null) sb.append(s);
 
-      response.setContentType("text/html");
       response.setStatus(HttpServletResponse.SC_OK);
       String name = req.getPathInfo().split("/")[1];
 
