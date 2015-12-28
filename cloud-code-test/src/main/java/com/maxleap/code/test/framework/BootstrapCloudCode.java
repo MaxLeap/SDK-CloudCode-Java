@@ -7,10 +7,7 @@ import sun.net.www.protocol.file.FileURLConnection;
 import java.io.*;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.net.JarURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLDecoder;
+import java.net.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.JarEntry;
@@ -137,7 +134,14 @@ public class BootstrapCloudCode {
 
     URL packageRoot = classLoader.getResource(hookPackage.replace(".", "/"));
     if (packageRoot == null) throw new MLException("your packageHook is invalid.Please check your global.json config");
-    File[] files = new File(packageRoot.getFile()).listFiles(new FilenameFilter() {
+    String packagePath = null;
+    try {
+      packagePath = packageRoot.toURI().getPath();
+    } catch (URISyntaxException e) {
+      e.printStackTrace();
+      throw new MLException("your packageHook path["+packageRoot.getFile()+"] is invalid.Please check your packageHook path");
+    }
+    File[] files = new File(packagePath).listFiles(new FilenameFilter() {
       public boolean accept(File dir, String name) {
         return name.endsWith(".class");
       }
