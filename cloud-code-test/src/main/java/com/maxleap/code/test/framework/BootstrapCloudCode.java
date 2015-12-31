@@ -2,6 +2,8 @@ package com.maxleap.code.test.framework;
 
 import com.maxleap.code.*;
 import com.maxleap.code.impl.*;
+import com.maxleap.code.spring.DefaultApplicationContext;
+import org.springframework.context.ApplicationContext;
 import sun.net.www.protocol.file.FileURLConnection;
 
 import java.io.*;
@@ -41,7 +43,8 @@ public class BootstrapCloudCode {
     //load hook and manager
     loadHookAndManager();
     cacheClasses();
-    loadMain(globalConfig.getCodeMain());
+    ApplicationContext context = new DefaultApplicationContext("applicationContext.xml");
+    loadMain(context,globalConfig.getCodeMain());
   }
 
   private enum Region {
@@ -91,12 +94,12 @@ public class BootstrapCloudCode {
     return this.loader;
   }
 
-  private void loadMain(String userMainClassPath) {
+  private void loadMain(ApplicationContext context,String userMainClassPath) {
     try {
       @SuppressWarnings("unchecked")
       Class<LoaderBase> clazz = (Class<LoaderBase>) Class.forName(userMainClassPath);
       loader = clazz.newInstance();
-      loader.main(globalConfig);
+      loader.main(context,globalConfig);
     } catch (Exception e) {
       throw new MLException(e);
     }

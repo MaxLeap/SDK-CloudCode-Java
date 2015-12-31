@@ -14,6 +14,10 @@ public final class MLClassManagerFactory {
     managerMap.put(clazz, entityManager);
   }
 
+  public static Map<Class<?>, MLClassManager> getManagerMap() {
+    return managerMap;
+  }
+
   public static <T> MLClassManager<T> getManager(Class<T> clazz) {
     return (MLClassManager<T>) managerMap.get(clazz);
   }

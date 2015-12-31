@@ -1,6 +1,7 @@
 package com.maxleap.code;
 
 import com.maxleap.code.impl.GlobalConfig;
+import org.springframework.context.ApplicationContext;
 
 import java.util.Map;
 
@@ -17,6 +18,6 @@ public interface Loader {
    *
    * @param globalConfig user's cloudcode config
    */
-  void main(GlobalConfig globalConfig);
+  void main(ApplicationContext context,GlobalConfig globalConfig);
 
 }
