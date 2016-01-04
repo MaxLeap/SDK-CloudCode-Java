@@ -18,7 +18,7 @@ public class FrameworkTest extends TestCloudCode{
 
   @Test
   public void function() {
-    Response response = runFunction("hello2", " world");
+    Response response = runFunction("hello", " world");
     Assert.assertNotNull(response);
     Assert.assertTrue(response.succeeded());
     Assert.assertEquals("hello world", response.getResult());

@@ -23,7 +23,7 @@ public class UserService {
   @Resource
   private GlobalConfig globalConfig;
 
-  @Function("hello2")
+  @Function("hello")
   public MLHandler hello(){
     return new MLHandler() {
       @Override

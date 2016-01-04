@@ -29,8 +29,8 @@ public class DefaultAutowiredAnnotationBeanPostProcessor extends AutowiredAnnota
 
   @Override
   public boolean postProcessAfterInstantiation(Object bean, String beanName) throws BeansException {
-    //为添加了@Function注解的类注册function/job
-    defineFunctionWhenTargetOnType(bean);
+//    //为添加了@Function注解的类注册function/job
+//    defineFunctionWhenTargetOnType(bean);
 
     //为添加了@Function注解的方法注册function/job
     Method[] methods = bean.getClass().getMethods();
