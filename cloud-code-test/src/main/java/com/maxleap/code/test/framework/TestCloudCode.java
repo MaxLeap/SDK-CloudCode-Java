@@ -35,7 +35,7 @@ public class TestCloudCode {
   protected Response runFunction(String name, String params, UserPrincipal userPrincipal) {
     Request request = new MLRequest(params, userPrincipal);
     Response response = null;
-    Definer definer = bootstrapCloudCode.getLoader().definers().get(RequestCategory.FUNCTION.alias());
+    Definer definer = Loader.definers().get(RequestCategory.FUNCTION.alias());
     if (definer == null) {
       System.err.println("doesn't exist function definer");
     } else {
@@ -67,7 +67,7 @@ public class TestCloudCode {
 
   protected void runJob(String name, String params, UserPrincipal userPrincipal) {
     Request request = new MLRequest(params, userPrincipal);
-    Definer definer = bootstrapCloudCode.getLoader().definers().get(RequestCategory.JOB.alias());
+    Definer definer = Loader.definers().get(RequestCategory.JOB.alias());
     if (definer == null) {
       logger.error("doesn't exist job definer");
     } else {

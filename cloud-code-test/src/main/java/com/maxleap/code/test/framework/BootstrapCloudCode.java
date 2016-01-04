@@ -2,6 +2,7 @@ package com.maxleap.code.test.framework;
 
 import com.maxleap.code.*;
 import com.maxleap.code.impl.*;
+import com.maxleap.code.spring.DefaultApplicationContext;
 import sun.net.www.protocol.file.FileURLConnection;
 
 import java.io.*;
@@ -20,7 +21,6 @@ public class BootstrapCloudCode {
 
   private GlobalConfig globalConfig;
   private static final Logger logger = LoggerFactory.getLogger(BootstrapCloudCode.class);
-  private LoaderBase loader;
   private ClassLoader classLoader;
   private Set<Class> hookClasses;
   private Map<String, MLClassManagerHandler> classesManagerHandlerMap = new ConcurrentHashMap<String, MLClassManagerHandler>();
@@ -41,7 +41,7 @@ public class BootstrapCloudCode {
     //load hook and manager
     loadHookAndManager();
     cacheClasses();
-    loadMain(globalConfig.getCodeMain());
+    new DefaultApplicationContext("applicationContext.xml");
   }
 
   private enum Region {
@@ -85,21 +85,6 @@ public class BootstrapCloudCode {
 
   public MLClassManagerHandler getClassesManagerHandler(String managerName) {
     return classesManagerHandlerMap.get(managerName);
-  }
-
-  public Loader getLoader() {
-    return this.loader;
-  }
-
-  private void loadMain(String userMainClassPath) {
-    try {
-      @SuppressWarnings("unchecked")
-      Class<LoaderBase> clazz = (Class<LoaderBase>) Class.forName(userMainClassPath);
-      loader = clazz.newInstance();
-      loader.main(globalConfig);
-    } catch (Exception e) {
-      throw new MLException(e);
-    }
   }
 
   private void cacheClasses() {

@@ -18,7 +18,7 @@ public class FrameworkTest extends TestCloudCode{
 
   @Test
   public void function() {
-    Response response = runFunction("hello", " world");
+    Response response = runFunction("hello2", " world");
     Assert.assertNotNull(response);
     Assert.assertTrue(response.succeeded());
     Assert.assertEquals("hello world", response.getResult());
@@ -26,7 +26,7 @@ public class FrameworkTest extends TestCloudCode{
 
   @Test
   public void job() {
-    runJob("myJob", "{\"value\":\"test\"}");
+    runJob("helloJob", "{\"value\":\"test\"}");
   }
 
   @Ignore

@@ -31,6 +31,7 @@ abstract class AbstractDefiner implements Definer {
 
   @Override
   public void define(String name, MLHandler<? extends Request, ? extends Response> handler) {
+    if (handlers.containsKey(name)) throw new MLException("name["+name+"] has existed.");
     handlers.put(name, handler);
   }
 

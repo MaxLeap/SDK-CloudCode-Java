@@ -1,7 +1,9 @@
 package com.maxleap.code.spring;
 
+import com.maxleap.code.CloudCodeContants;
 import com.maxleap.code.MLClassManager;
 import com.maxleap.code.MLClassManagerFactory;
+import com.maxleap.code.impl.GlobalConfig;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -66,6 +68,7 @@ public class DefaultApplicationContext extends ClassPathXmlApplicationContext {
     autoWiredDefine.setBeanClassName(DefaultAutowiredAnnotationBeanPostProcessor.class.getName());
 //    DefaultListableBeanFactory reg = (DefaultListableBeanFactory) beanFactory;
 //    reg.registerBeanDefinition(AnnotationConfigUtils.AUTOWIRED_ANNOTATION_PROCESSOR_BEAN_NAME, autoWiredDefine);
+    registerAppConfig(beanFactory);
     //注入所有的MLClassManager
     for (Map.Entry<Class<?>,MLClassManager> entry:MLClassManagerFactory.getManagerMap().entrySet()) {
       registerBeanDefinition(beanFactory,entry.getKey());
@@ -81,5 +84,14 @@ public class DefaultApplicationContext extends ClassPathXmlApplicationContext {
     beanDefinition.getConstructorArgumentValues().addGenericArgumentValue(clazz);
     DefaultListableBeanFactory reg = (DefaultListableBeanFactory) beanFactory;
     reg.registerBeanDefinition(clazz.getName(), beanDefinition);
+  }
+
+  //注入AppConfig
+  private static void registerAppConfig(ConfigurableListableBeanFactory beanFactory){
+    BeanDefinition beanDefinition = new GenericBeanDefinition();
+    beanDefinition.setBeanClassName(GlobalConfig.class.getName());
+    beanDefinition.getConstructorArgumentValues().addGenericArgumentValue(CloudCodeContants.GLOBAL_CONFIG.getConfigJsonStr());
+    DefaultListableBeanFactory reg = (DefaultListableBeanFactory) beanFactory;
+    reg.registerBeanDefinition(GlobalConfig.class.getSimpleName(), beanDefinition);
   }
 }
