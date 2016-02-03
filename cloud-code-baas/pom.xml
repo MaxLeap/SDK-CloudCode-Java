@@ -12,7 +12,7 @@
   <artifactId>cloud-code-baas</artifactId>
 
   <properties>
-    <vertx.version>3.1.0</vertx.version>
+    <vertx.version>3.2.0</vertx.version>
     <metric.version>3.0.2</metric.version>
     <rxjava.version>1.0.10</rxjava.version>
   </properties>
