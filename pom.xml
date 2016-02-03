@@ -18,6 +18,7 @@
     <module>cloud-code-base</module>
     <module>cloud-code-sdk</module>
     <module>cloud-code-test</module>
+    <module>cloud-code-baas</module>
   </modules>
 
   <url>https://github.com/MaxLeap/SDK-CloudCode-Java</url>

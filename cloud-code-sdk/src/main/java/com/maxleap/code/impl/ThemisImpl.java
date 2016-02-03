@@ -26,8 +26,8 @@ public class ThemisImpl implements Themis {
     this.version = CloudCodeContants.GLOBAL_CONFIG.getVersion();
     this.countAddress = CloudCodeContants.DEFAULT_API_ADDRESS_PREFIX + "/themis/count/";
     this.lockAddress = CloudCodeContants.DEFAULT_API_ADDRESS_PREFIX + "/themis/lock/";
-    headers.put(CloudCodeContants.HEADER_ZCLOUD_APPID, CloudCodeContants.GLOBAL_CONFIG.getApplicationID());
-    headers.put(CloudCodeContants.HEADER_ZCLOUD_MASTERKEY, CloudCodeContants.GLOBAL_CONFIG.getApplicationKey());
+    headers.put(CloudCodeContants.HEADER_ML_APPID, CloudCodeContants.GLOBAL_CONFIG.getApplicationID());
+    headers.put(CloudCodeContants.HEADER_ML_MASTERKEY, CloudCodeContants.GLOBAL_CONFIG.getApplicationKey());
   }
 
   private String getFullCountAddress(String operator, String name) {

@@ -46,16 +46,16 @@ public class TestCloudCode {
         } catch (Throwable e) {
           e.printStackTrace();
           StackTraceElement[] elements = e.getStackTrace();
+          response = new MLResponse(String.class);
           if (elements != null && elements.length > 0) {
-            System.err.println(e.toString() + " at " + elements[0]);
+            response.setError(e.toString() + " at " + elements[0]);
           } else {
-            System.err.println(e.toString());
+            response.setError(e.toString());
           }
         }
       } else {
         response = new MLResponse(String.class);
         response.setError("function " + name + " undefined.");
-        System.err.println("function " + name + " undefined.");
       }
     }
     return response;

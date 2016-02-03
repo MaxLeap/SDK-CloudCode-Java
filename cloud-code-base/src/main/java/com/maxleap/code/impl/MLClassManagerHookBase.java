@@ -2,6 +2,7 @@ package com.maxleap.code.impl;
 
 
 import com.maxleap.las.sdk.DeleteMsg;
+import com.maxleap.las.sdk.MLUpdate;
 import com.maxleap.las.sdk.SaveMsg;
 import com.maxleap.las.sdk.UpdateMsg;
 import com.maxleap.code.AfterResult;
@@ -38,7 +39,12 @@ public abstract class MLClassManagerHookBase<T> implements MLClassManagerHook<T>
   }
 
   @Override
-  public AfterResult afterUpdate(String objectId, UpdateMsg updateMessage, UserPrincipal userPrincipal) {
+  public BeforeResult<MLUpdate> beforeUpdate(String objectId,MLUpdate update, UserPrincipal userPrincipal) {
+    return new BeforeResult<MLUpdate>(update,true);
+  }
+
+  @Override
+  public AfterResult afterUpdate(String objectId,BeforeResult<MLUpdate> beforeResult, UpdateMsg updateMessage, UserPrincipal userPrincipal) {
     AfterResult afterResult = new AfterResult(updateMessage);
     return afterResult;
   }

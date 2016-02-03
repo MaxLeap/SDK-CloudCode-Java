@@ -51,13 +51,16 @@ public class HTTPServerMock {
       StringBuilder sb = new StringBuilder();
       String s;
       while ((s = req.getReader().readLine()) != null) sb.append(s);
-
+      response.setCharacterEncoding("UTF-8");
       response.setStatus(HttpServletResponse.SC_OK);
       String name = req.getPathInfo().split("/")[1];
-
       Response result = testCloudCode.runFunction(name, sb.toString());
       if (result.succeeded()) response.getWriter().println(result.getResult());
-      else response.sendError(404, result.getError());
+      else {
+        response.setContentType("application/json;charset=UTF-8");
+        response.setStatus(400);
+        response.getWriter().println("{\"errorCode\":109998,\"errorMessage\":\""+result.getError()+"\"}");
+      }
     }
   }
 
@@ -82,7 +85,6 @@ public class HTTPServerMock {
       String name = req.getPathInfo().split("/")[1];
 
       testCloudCode.runJob(name, sb.toString());
-      response.getWriter().println("ok");
     }
   }
 

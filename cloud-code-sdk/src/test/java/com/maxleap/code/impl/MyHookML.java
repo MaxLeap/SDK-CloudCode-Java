@@ -4,6 +4,7 @@ import com.maxleap.code.AfterResult;
 import com.maxleap.code.BeforeResult;
 import com.maxleap.code.UserPrincipal;
 import com.maxleap.las.sdk.DeleteMsg;
+import com.maxleap.las.sdk.MLUpdate;
 import com.maxleap.las.sdk.SaveMsg;
 import com.maxleap.las.sdk.UpdateMsg;
 
@@ -35,7 +36,7 @@ public class MyHookML extends MLClassManagerHookBase<Song> {
   }
 
   @Override
-  public AfterResult afterUpdate(String objectId, UpdateMsg updateMessage, UserPrincipal userPrincipal) {
+  public AfterResult afterUpdate(String objectId, BeforeResult<MLUpdate> beforeResult, UpdateMsg updateMessage, UserPrincipal userPrincipal) {
     return new AfterResult(updateMessage);
   }
 

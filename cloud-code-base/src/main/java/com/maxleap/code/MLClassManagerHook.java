@@ -2,6 +2,7 @@ package com.maxleap.code;
 
 
 import com.maxleap.las.sdk.DeleteMsg;
+import com.maxleap.las.sdk.MLUpdate;
 import com.maxleap.las.sdk.SaveMsg;
 import com.maxleap.las.sdk.UpdateMsg;
 
@@ -58,6 +59,15 @@ public interface MLClassManagerHook<T> {
   AfterResult afterDelete(BeforeResult<String> beforeResult, DeleteMsg deleteMessage, UserPrincipal userPrincipal);
 
   /**
+   * hook before update
+   * @param objectId object id for update entity
+   * @param update update operator
+   * @param userPrincipal userPrincipal
+   * @return BeforeResult result of before update entity
+   */
+  BeforeResult<MLUpdate> beforeUpdate(String objectId,MLUpdate update,UserPrincipal userPrincipal);
+
+  /**
    * do something after completed update operation.
    *
    * @param objectId      object id of entity
@@ -65,7 +75,7 @@ public interface MLClassManagerHook<T> {
    * @param userPrincipal userPrincipal
    * @return result of after delete entity
    */
-  AfterResult afterUpdate(String objectId, UpdateMsg updateMessage, UserPrincipal userPrincipal);
+  AfterResult afterUpdate(String objectId,BeforeResult<MLUpdate> beforeResult, UpdateMsg updateMessage, UserPrincipal userPrincipal);
 
 
 }
