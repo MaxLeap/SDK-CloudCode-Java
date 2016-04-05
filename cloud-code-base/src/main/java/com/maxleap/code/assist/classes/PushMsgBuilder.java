@@ -70,6 +70,21 @@ public abstract class PushMsgBuilder {
     return this;
   }
 
+  /**
+   * 同步推送
+   */
   public abstract void push();
+
+  /**
+   * 异步推送
+   */
+  public void pushAsync() {
+    new Thread(new Runnable() {
+      @Override
+      public void run() {
+        push();
+      }
+    }).start();
+  }
 
 }
