@@ -20,6 +20,8 @@ public interface MLClassManager<T> {
 
   UpdateMsg update(String id, MLUpdate update, UserPrincipal userPrincipal) throws MLException;
 
+  UpdateMsg updateByQuery(MLQuery query, MLUpdate update, UserPrincipal userPrincipal) throws MLException;
+
   DeleteResult delete(String id, UserPrincipal userPrincipal) throws MLException;
 
   DeleteResult delete(String[] ids, UserPrincipal userPrincipal) throws MLException;
@@ -35,6 +37,8 @@ public interface MLClassManager<T> {
   T findById(String id) throws MLException;
 
   UpdateMsg update(String id, MLUpdate update) throws MLException;
+
+  UpdateMsg updateByQuery(MLQuery query, MLUpdate update) throws MLException;
 
   DeleteResult delete(String id) throws MLException;
 

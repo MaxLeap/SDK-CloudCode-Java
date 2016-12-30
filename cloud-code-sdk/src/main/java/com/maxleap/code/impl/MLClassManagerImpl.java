@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.maxleap.code.MLException;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -53,17 +54,18 @@ public class MLClassManagerImpl<T> implements MLClassManager<T> {
   @Override
   public FindMsg<T> find(MLQuery query, boolean count, UserPrincipal userPrincipal) throws MLException {
     try {
-      String postQuery = serializeLasQueryForPostQuest(query);
+      String postQuery = serializeLasQueryForPostQuest(query, count);
       String response = WebUtils.doPost(apiAddress + "/query", CloudCodeContants.getHeaders(userPrincipal), postQuery, CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
       LOGGER.info("get response of find[" + apiAddress + "/query](" + postQuery + "):" + response);
       JsonNode responseJson = MLJsonParser.asJsonNode(response);
       ArrayNode results = (ArrayNode) responseJson.get("results");
       List<T> r = new ArrayList<T>();
-      if (results == null || results.size() == 0) return new FindMsg<T>();
+      if (results == null || results.size() == 0)
+        return new FindMsg<T>(count ? responseJson.get("count").asInt() : 0, r);
       for (JsonNode result : results) {
         r.add(MLJsonParser.asObject(result.toString(), entityClazz));
       }
-      return new FindMsg<T>(count ? results.size() : 0, r);
+      return new FindMsg<T>(count ? responseJson.get("count").asInt() : 0, r);
     } catch (Exception e) {
       throw new MLException(e);
     }
@@ -83,14 +85,25 @@ public class MLClassManagerImpl<T> implements MLClassManager<T> {
 
   @Override
   public UpdateMsg update(String id, MLUpdate update, UserPrincipal userPrincipal) throws MLException {
-    BeforeResult<MLUpdate> beforeResult = hook == null ? new BeforeResult<MLUpdate>(update,true) : hook.beforeUpdate(id, update, userPrincipal);
+    BeforeResult<MLUpdate> beforeResult = hook == null ? new BeforeResult<MLUpdate>(update, true) : hook.beforeUpdate(id, update, userPrincipal);
     if (!beforeResult.isResult()) throw new MLException(beforeResult.getFailMessage());
     try {
       String response = WebUtils.doPut(apiAddress + "/" + id, CloudCodeContants.getHeaders(userPrincipal), MLJsonParser.asJson(update.update()), CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
       LOGGER.info("get response of update[" + apiAddress + "/" + id + "](" + update.update() + "):" + response);
       UpdateMsg updateMsg = MLJsonParser.asObject(response, UpdateMsg.class);
-      if (hook != null) hook.afterUpdate(id,beforeResult, updateMsg, userPrincipal);
+      if (hook != null) hook.afterUpdate(id, beforeResult, updateMsg, userPrincipal);
       return updateMsg;
+    } catch (IOException e) {
+      throw new MLException(e);
+    }
+  }
+
+  @Override
+  public UpdateMsg updateByQuery(MLQuery query, MLUpdate update, UserPrincipal userPrincipal) throws MLException {
+    try {
+      String response = WebUtils.doPost(apiAddress + "/update?where=" + URLEncoder.encode(MLJsonParser.asJson(query.query()), "UTF-8"), CloudCodeContants.getHeaders(userPrincipal), MLJsonParser.asJson(update.update()), CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
+      LOGGER.info("get response of update[" + apiAddress + "/" + update + "](where=" + query.query() + ")(" + update.update() + "):" + response);
+      return MLJsonParser.asObject(response, UpdateMsg.class);
     } catch (IOException e) {
       throw new MLException(e);
     }
@@ -158,6 +171,11 @@ public class MLClassManagerImpl<T> implements MLClassManager<T> {
   }
 
   @Override
+  public UpdateMsg updateByQuery(MLQuery query, MLUpdate update) throws MLException {
+    return this.updateByQuery(query, update, null);
+  }
+
+  @Override
   public DeleteResult delete(String id) throws MLException {
     return this.delete(id, null);
   }
@@ -167,7 +185,7 @@ public class MLClassManagerImpl<T> implements MLClassManager<T> {
     return this.delete(ids, null);
   }
 
-  String serializeLasQueryForPostQuest(MLQuery lasQuery) {
+  String serializeLasQueryForPostQuest(MLQuery lasQuery, Boolean count) {
     Map<String, Object> map = new HashMap<String, Object>();
     if (lasQuery.query() != null) map.put("where", MLJsonParser.asJson(lasQuery.query()));
     if (lasQuery.sort() != null) map.put("order", lasQuery.sort());
@@ -175,6 +193,8 @@ public class MLClassManagerImpl<T> implements MLClassManager<T> {
     if (lasQuery.includes() != null) map.put("include", lasQuery.includes());
     map.put("limit", lasQuery.limit());
     map.put("skip", lasQuery.skip());
+    if (count) map.put("count", 1);
+
 //    map.put("excludeKeys", null); Unsupported.
     return MLJsonParser.asJson(map);
   }

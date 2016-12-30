@@ -46,6 +46,17 @@ public final class MLClassManagerHandler<T> implements MLHandler<MLClassManagerR
           updateResponse.setError(e.getMessage());
         }
         return updateResponse;
+      case UPDATE_BY_QUERY:
+        MLClassManagerRequest.MLClassManagerUpdateByQueryRequest updateByQueryRequest = request.asUpdateByQueryRequest();
+        Response<UpdateMsg> updateByQueryResponse = new MLResponse<UpdateMsg>(UpdateMsg.class);
+        try {
+          UpdateMsg updateMsg = entityManager.updateByQuery(updateByQueryRequest.mlQuery(), updateByQueryRequest.mlUpdate(), request.getUserPrincipal());
+          updateByQueryResponse.setResult(updateMsg);
+        } catch (Exception e) {
+          logger.error(e.getMessage(), e);
+          updateByQueryResponse.setError(e.getMessage());
+        }
+        return updateByQueryResponse;
       case DELETE:
         MLClassManagerRequest.MLClassManagerDeleteRequest deleteRequest = request.asDeleteRequest();
         Response<DeleteMsg> deleteResponse = new MLResponse(DeleteMsg.class);
