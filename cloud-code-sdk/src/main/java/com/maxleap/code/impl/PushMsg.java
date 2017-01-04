@@ -36,4 +36,21 @@ public class PushMsg extends PushMsgBuilder {
     }
   }
 
+  @Override
+  public void pushAsync() {
+    if (this.data == null) throw new MLException("your message must not be empty");
+    if (this.message == null) super.build();
+    new Thread(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          String response = WebUtils.doPost(apiAddress, CloudCodeContants.getHeaders(null), message, CloudCodeContants.DEFAULT_TIMEOUT, CloudCodeContants.DEFAULT_READ_TIMEOUT);
+          LOGGER.info("get response of push[" + apiAddress + "]("+message+"):" + response);
+        } catch (IOException e) {
+          throw new MLException(e);
+        }
+      }
+    }).start();
+
+  }
 }

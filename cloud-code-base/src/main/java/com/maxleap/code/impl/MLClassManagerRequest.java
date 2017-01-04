@@ -4,6 +4,7 @@ import com.maxleap.code.IdentityType;
 import com.maxleap.code.MethodName;
 import com.maxleap.code.Request;
 import com.maxleap.code.UserPrincipal;
+import com.maxleap.las.sdk.MLQuery;
 import com.maxleap.las.sdk.MLUpdate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -86,6 +87,11 @@ public class MLClassManagerRequest implements Request {
     return new MLClassManagerUpdateRequest(objectId, update);
   }
 
+  public MLClassManagerUpdateByQueryRequest asUpdateByQueryRequest() {
+    Map<String, Object> map = (Map)params;
+    return new MLClassManagerUpdateByQueryRequest((Map)map.get("query"),(Map)map.get("update"));
+  }
+
   public MLClassManagerDeleteRequest asDeleteRequest() {
     return new MLClassManagerDeleteRequest(params.toString());
   }
@@ -142,6 +148,40 @@ public class MLClassManagerRequest implements Request {
       return MLUpdate.getUpdate(update);
     }
 
+  }
+
+  public class MLClassManagerUpdateByQueryRequest {
+    private Map<String,Object> query;
+    private Map<String,Object> update;
+
+    public MLClassManagerUpdateByQueryRequest(Map<String, Object> query, Map<String, Object> update) {
+      this.query = query;
+      this.update = update;
+    }
+
+    public Map<String, Object> getQuery() {
+      return query;
+    }
+
+    public void setQuery(Map<String, Object> query) {
+      this.query = query;
+    }
+
+    public Map<String, Object> getUpdate() {
+      return update;
+    }
+
+    public void setUpdate(Map<String, Object> update) {
+      this.update = update;
+    }
+
+    public MLQuery mlQuery() {
+      return MLQuery.instance(query);
+    }
+
+    public MLUpdate mlUpdate(){
+      return MLUpdate.getUpdate(update);
+    }
   }
 
   public class MLClassManagerDeleteRequest {

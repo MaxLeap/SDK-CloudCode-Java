@@ -1,5 +1,7 @@
 package com.maxleap.code;
 
+import java.util.Map;
+
 /**
  * stream
  */
@@ -13,6 +15,8 @@ public class BeforeResult<T> {
 
   /*the reason of fail, for the response*/
   private String failMessage;
+
+  private Map<String,Object> context;
 
   public BeforeResult() {
   }
@@ -54,6 +58,14 @@ public class BeforeResult<T> {
 
   public void setFailMessage(String failMessage) {
     this.failMessage = failMessage;
+  }
+
+  public Map<String, Object> getContext() {
+    return context;
+  }
+
+  public void setContext(Map<String, Object> context) {
+    this.context = context;
   }
 
   @Override

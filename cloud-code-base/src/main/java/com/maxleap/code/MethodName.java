@@ -5,7 +5,7 @@ package com.maxleap.code;
  * Date：15/9/17
  */
 public enum MethodName {
-  CREATE("create"), UPDATE("update"), DELETE("delete"), DELETEBATCH("deleteBatch"),
+  CREATE("create"), UPDATE("update"), UPDATE_BY_QUERY("updateByQuery"), DELETE("delete"), DELETEBATCH("deleteBatch"),
   FIND_BY_ID("findById"), FIND("find"), UN_KNOW("unKnow");
 
   private String methodName;
